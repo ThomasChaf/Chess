@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { Case } from './case'
 
+const isMoovable = (selectedPiece, row, column) => {
+  if (!selectedPiece) return false
+
+  return !!selectedPiece.mooves.find(([r, c]) => r === row && c === column)
+}
+
 const Board = (props) => {
   const [selected, setSelected] = useState([])
   const [selectedRow, selectedColunm] = selected
 
   const selectedPiece = props.game.at(selectedRow, selectedColunm)
-  const mooves = (selectedPiece && selectedPiece.mooves) || []
-
-  console.log(selectedPiece)
 
   return (
     <div className="board">
@@ -28,7 +31,7 @@ const Board = (props) => {
             <Case
               key={`${row}-${column}`}
               isSelected={isSelected}
-              isMoovable={!!mooves.find(([r, c]) => r === row && c === column)}
+              isMoovable={isMoovable(selectedPiece, row, column)}
               column={column}
               row={row}
               value={piece.type}
