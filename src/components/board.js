@@ -13,6 +13,7 @@ const Board = (props) => {
   const [selectedRow, selectedColunm] = selected
 
   const selectedPiece = props.game.board.at(selectedRow, selectedColunm)
+  // const situation = props.game.getSitutation()
 
   return (
     <div className="board">
@@ -27,6 +28,7 @@ const Board = (props) => {
               props.game.moove(selectedPiece, row, column)
               setMoove(m + 1)
               setSelected([])
+              return
             }
 
             if (piece.type === 'EMPTY') return

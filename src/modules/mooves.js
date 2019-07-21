@@ -75,7 +75,9 @@ const computePawnMooves = (board, rowIndex, columnIndex, piece) => {
     board.isEnnemy(r, c, piece)
   )
 
-  for (let i = 1; i <= 2; i++) {
+  const max = (piece.color === 'W' && rowIndex === 6) || (piece.color === 'B' && rowIndex === 1) ? 2 : 1
+
+  for (let i = 1; i <= max; i++) {
     const r = rowIndex + i * inc
     const c = columnIndex
 
