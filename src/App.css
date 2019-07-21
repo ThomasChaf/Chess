@@ -7,6 +7,7 @@
   position: absolute;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
   top: 0;
   left: 0;
   width: 100%;
