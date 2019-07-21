@@ -8,6 +8,12 @@ export class Game {
     this.computeMooves()
   }
 
+  moove(piece, row, column) {
+    this.board.setPiece({ type: 'EMPTY' }, piece.row, piece.column)
+    this.board.setPiece(piece, row, column)
+    this.computeMooves()
+  }
+
   computeMooves() {
     ;[0, 1, 2, 3, 4, 5, 6, 7].forEach((columnIndex) => {
       ;[0, 1, 2, 3, 4, 5, 6, 7].forEach((rowIndex) => {

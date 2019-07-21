@@ -1,14 +1,20 @@
 export class BoardManager {
   constructor(INITIAL_BOARD) {
-    this.board = INITIAL_BOARD.map((row) =>
-      row.map((cell) => {
+    this.board = INITIAL_BOARD.map((cellList, row) =>
+      cellList.map((cell, column) => {
         if (!cell) return { type: 'EMPTY' }
 
         const [color, type] = cell
 
-        return { color, type }
+        return { color, type, row, column }
       })
     )
+  }
+
+  setPiece(piece, row, column) {
+    this.board[row][column] = piece
+    this.board[row][column].row = row
+    this.board[row][column].column = column
   }
 
   setMooves(row, column, mooves) {
