@@ -13,7 +13,7 @@ const Board = (props) => {
   const [selectedRow, selectedColunm] = selected
 
   const selectedPiece = props.game.board.at(selectedRow, selectedColunm)
-  // const situation = props.game.getSitutation()
+  const situation = props.game.situation
 
   return (
     <div className="board">

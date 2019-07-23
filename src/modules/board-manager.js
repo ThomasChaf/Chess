@@ -21,6 +21,11 @@ export class BoardManager {
     this.board[row][column].mooves = mooves
   }
 
+  isType(row, column, type) {
+    const cell = this.at(row, column)
+    return cell && cell.type === type
+  }
+
   isEnnemy(row, column, piece) {
     const cell = this.at(row, column)
     return cell && (cell.type !== 'EMPTY' && cell.color !== piece.color)

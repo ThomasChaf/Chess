@@ -1,10 +1,11 @@
 import { BoardManager } from './board-manager'
 import { computeMoove } from './mooves'
+import { analyseMooves } from './situation'
 
 export class Game {
   constructor(INITIAL_BOARD) {
     this.board = new BoardManager(INITIAL_BOARD)
-
+    this.situtation = { type: 'NEUTRAL' }
     this.computeMooves()
   }
 
@@ -22,6 +23,12 @@ export class Game {
         if (!piece || piece.type === 'EMPTY') return
 
         const mooves = computeMoove(this.board, piece, rowIndex, columnIndex)
+
+        const { isCheck, params } = analyseMooves(this.board, mooves)
+
+        if (isCheck) {
+          this.situation = { type: 'CHECK', ...params }
+        }
 
         this.board.setMooves(rowIndex, columnIndex, mooves)
       })
