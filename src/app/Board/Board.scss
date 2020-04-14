@@ -1,0 +1,50 @@
+%black-case {
+  background-color: #a2adb1;
+}
+
+%white-case {
+  background-color: #fdfdfa;
+}
+
+.board {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+}
+
+.board-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.board-row {
+  display: flex;
+  width: 100%;
+  height: calc(100% / 8);
+}
+
+.board-case {
+  width: calc(100% / 8);
+  height: 100%;
+}
+
+.board-row:nth-child(even) {
+  > .board-case:nth-child(even) {
+    @extend %white-case;
+  }
+  > .board-case:nth-child(odd) {
+    @extend %black-case;
+  }
+}
+
+.board-row:nth-child(odd) {
+  > .board-case:nth-child(even) {
+    @extend %black-case;
+  }
+  > .board-case:nth-child(odd) {
+    @extend %white-case;
+  }
+}

@@ -1,0 +1,22 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/GJ3aXEyo"]
+[Date "2020.04.11"]
+[Round "-"]
+[White "Totolebarjo"]
+[Black "Sula123"]
+[Result "1-0"]
+[UTCDate "2020.04.11"]
+[UTCTime "13:13:34"]
+[WhiteElo "1387"]
+[BlackElo "1510"]
+[WhiteRatingDiff "+9"]
+[BlackRatingDiff "-8"]
+[Variant "Standard"]
+[TimeControl "180+2"]
+[ECO "B30"]
+[Opening "Sicilian Defense: Old Sicilian"]
+[Termination "Normal"]
+
+1. e4 c5 2. Nf3 Nc6 3. c3 e6 4. d4 d5 5. Bb5 a6 6. exd5 exd5 7. Bxc6+ bxc6 8. O-O Be7 9. Ne5 Qc7 10. Qf3 Nf6 11. Qg3 Nh5 12. Qf3 Bd6 13. Re1 f6 14. Qxh5+ g6 15. Nxg6+ Kf7 16. Nxh8+ Kg7 17. Bh6+ Kxh8 18. Re8+ Bf8 19. Rxf8# 1-0
+
+
