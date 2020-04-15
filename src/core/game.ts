@@ -5,7 +5,7 @@ import { generate } from "shortid";
 export class Game {
   public id: string = generate();
   public board: Board = new Board();
-  private history: Play[] = [];
+  public history: Play[] = [];
   private step: number = 0;
 
   public play = (play: Play, save: boolean = true) => {
@@ -14,6 +14,8 @@ export class Game {
     if (play.taken) this.board.take(play.taken);
 
     play.moves.forEach(this.board.applyMove);
+
+    if (play.promotion) this.board.promote(play.moves[0].to, play.promotion);
   };
 
   public launch = (cb: () => void): NodeJS.Timeout => {
@@ -27,7 +29,7 @@ export class Game {
       this.play(this.history[this.step], false);
       this.step += 1;
       cb();
-    }, 400);
+    }, 1000);
 
     return timer;
   };

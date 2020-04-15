@@ -22,4 +22,5 @@ export type Move = {
 export type Play = {
   moves: Move[];
   taken: Position | null;
+  promotion: EPieceType | null;
 };

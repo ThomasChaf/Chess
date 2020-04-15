@@ -1,5 +1,5 @@
 import { Move, EPieceColor, EPieceType, Position, Play } from "./game-d";
-import { parseCol, parseRow, parseType } from "./utils";
+import { parseCol, parseRow, parseType, isSameCase, isPawn } from "./utils";
 import { Piece } from "./piece";
 import { Game } from "./game";
 
@@ -27,6 +27,32 @@ class GameFactory {
       from: [piece.row, piece.col],
       to
     } as Move;
+  };
+
+  private checkEnPassant = (color: EPieceColor, moveBlob: string): Play | null => {
+    const col = parseCol(moveBlob[0]);
+    const to = [parseRow(moveBlob[3]), parseCol(moveBlob[2])] as Position;
+    const lastPlay = this.game.history[this.game.history.length - 1];
+    if (!lastPlay) return null;
+    const lastMove = lastPlay.moves[0];
+    const lastMovedPiece = this.game.board.getPieceAt(lastMove.to);
+    const pawn = this.game.board.getPieceAt([lastMove.to[0], col]);
+
+    if (!isPawn(pawn) || pawn.color !== color || !isPawn(lastMovedPiece)) return null;
+
+    if (lastMove.to[0] - lastMove.from[0] !== 2) return null;
+
+    const enPassantPosition = [lastMove.to[0] - (color === EPieceColor.White ? -1 : 1), lastMove.to[1]] as Position;
+
+    if (isSameCase(to, enPassantPosition)) {
+      return {
+        moves: [{ from: [pawn.row, pawn.col], to }],
+        taken: lastMove.to,
+        promotion: null
+      };
+    }
+
+    return null;
   };
 
   private pawnTake = (color: EPieceColor, moveBlob: string): Move => {
@@ -84,39 +110,56 @@ class GameFactory {
     throw new Error("This rock is impossible");
   };
 
+  private parsePromotion = (playBlob: string): EPieceType | null => {
+    const res = playBlob.match(/^.*=([RKBQ]).*$/);
+
+    if (!res) return null;
+
+    return parseType(res[1]);
+  };
+
   private parsePlay = (color: EPieceColor, playBlob: string): Play => {
-    if (playBlob.match(/^[a-h]\d\+?#?$/) != null) {
+    console.log(playBlob);
+    const promotion = this.parsePromotion(playBlob);
+
+    if (playBlob.match(/^[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       const move = this.pawnMove(color, playBlob);
 
-      // console.log(move);
-      return { moves: [move], taken: null };
+      console.log(move);
+      return { moves: [move], taken: null, promotion };
     }
-    if (playBlob.match(/^[KQRBN][a-h]\d\+?#?$/) != null) {
+    if (playBlob.match(/^[KQRBN][a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       const move = this.pieceMove(color, playBlob);
 
-      // console.log(move);
-      return { moves: [move], taken: null };
+      console.log(move);
+      return { moves: [move], taken: null, promotion };
     }
-    if (playBlob.match(/^[a-h]x[a-h]\d\+?#?$/) != null) {
+    if (playBlob.match(/^[a-h]x[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
+      const play = this.checkEnPassant(color, playBlob);
+      if (play) {
+        console.log("En passant", play.moves);
+        return play;
+      }
+
       const move = this.pawnTake(color, playBlob);
 
-      // console.log(move);
-      return { moves: [move], taken: move.to };
+      console.log(move);
+      return { moves: [move], taken: move.to, promotion };
     }
-    if (playBlob.match(/^[KQRBN]x[a-h]\d\+?#?$/) != null) {
+    if (playBlob.match(/^[KQRBN]x[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       const move = this.pieceTake(color, playBlob);
 
-      // console.log(move);
-      return { moves: [move], taken: move.to };
+      console.log(move);
+      return { moves: [move], taken: move.to, promotion };
     }
-    if (playBlob.match(/^O-O(-O)?\+?#?$/) != null) {
+    if (playBlob.match(/^O-O(-O)?(=[RKBQ])?\+?#?$/) != null) {
       const moves = this.kingRock(color, playBlob);
 
-      // console.log(moves);
-      return { moves, taken: null };
+      console.log(moves);
+      return { moves, taken: null, promotion };
     }
-    if (playBlob.match(/^(1-0)|(0-1)$/) != null) {
-      return { moves: [], taken: null };
+    if (playBlob.match(/^(1-0)|(0-1)|(1\/2-1\/2)$/) != null) {
+      return { moves: [], taken: null, promotion };
     }
 
     throw new Error(`Not implemented play ${playBlob}`);

@@ -4,6 +4,7 @@ import { isSameCase } from "./utils";
 import { Piece } from "./piece";
 
 export interface IFindPieceFilters {
+  row?: number;
   col?: number;
   type?: EPieceType;
   color?: EPieceColor;
@@ -12,16 +13,24 @@ export interface IFindPieceFilters {
 export class Board {
   private pieces: Piece[] = PIECES.map((p) => new Piece(p.type, p.color, p.row, p.col));
 
-  private piecesFiltered = (filters: IFindPieceFilters): Piece[] => {
+  public promote = (position: Position, promotion: EPieceType) =>
+    this.pieces.map((piece: Piece) => {
+      if (isSameCase(position, [piece.row, piece.col])) piece.type = promotion;
+
+      return piece;
+    });
+
+  public getFilteredPieces = (filters: IFindPieceFilters): Piece[] => {
     return this.pieces.filter(
       (p: Piece) =>
+        (!filters.row || filters.row === p.row) &&
         (!filters.col || filters.col === p.col) &&
         (!filters.color || filters.color === p.color) &&
         (!filters.type || filters.type === p.type)
     );
   };
 
-  private pieceByPosition = (position: Position): Piece | undefined => {
+  public getPieceAt = (position: Position): Piece | undefined => {
     return this.pieces.find((p) => isSameCase([p.row, p.col], position));
   };
 
@@ -29,11 +38,11 @@ export class Board {
     const [row, col] = position;
     if (row < 1 || row > 8 || col < 0 || col > 8) return false;
 
-    return !this.pieceByPosition(position);
+    return !this.getPieceAt(position);
   };
 
   private isEnnemy = (color: EPieceColor, position: Position): boolean => {
-    const piece = this.pieceByPosition(position);
+    const piece = this.getPieceAt(position);
 
     return !!piece && piece.color !== color;
   };
@@ -158,7 +167,7 @@ export class Board {
   };
 
   public findPiece = (filters: IFindPieceFilters, to: Position): Piece => {
-    const piece = this.piecesFiltered(filters).find((p) => this.isMoveAllowed(p, to));
+    const piece = this.getFilteredPieces(filters).find((p) => this.isMoveAllowed(p, to));
 
     if (!piece) {
       throw new Error("No piece found");

@@ -1,4 +1,5 @@
 import { Position, EPieceType } from "./game-d";
+import { Piece } from "./piece";
 
 export const parseCol = (col: string): number => {
   switch (col.toLowerCase()) {
@@ -43,3 +44,5 @@ export const parseType = (type: string): EPieceType => {
 };
 
 export const isSameCase = ([r1, c1]: Position, [r2, c2]: Position): boolean => r1 === r2 && c1 === c2;
+
+export const isPawn = (piece: Piece | undefined): piece is Piece => !!piece && piece.type === EPieceType.Pawn;
