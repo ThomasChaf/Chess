@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
+import { Game } from "core/index";
 import { Board } from "./Board/Board";
 import { Menu } from "./Menu/Menu";
-import { Game } from "../core/game";
 import "./App.css";
 
 const useGameManager = (): [Game, (g: Game) => void] => {

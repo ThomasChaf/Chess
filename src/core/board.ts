@@ -20,19 +20,17 @@ export class Board {
       return piece;
     });
 
-  public getFilteredPieces = (filters: IFindPieceFilters): Piece[] => {
-    return this.pieces.filter(
+  public getFilteredPieces = (filters: IFindPieceFilters): Piece[] =>
+    this.pieces.filter(
       (p: Piece) =>
         (!filters.row || filters.row === p.row) &&
         (!filters.col || filters.col === p.col) &&
         (!filters.color || filters.color === p.color) &&
         (!filters.type || filters.type === p.type)
     );
-  };
 
-  public getPieceAt = (position: Position): Piece | undefined => {
-    return this.pieces.find((p) => isSameCase([p.row, p.col], position));
-  };
+  public getPieceAt = (position: Position): Piece | undefined =>
+    this.pieces.find((p) => isSameCase([p.row, p.col], position));
 
   private isAvailable = (position: Position): boolean => {
     const [row, col] = position;
@@ -67,8 +65,8 @@ export class Board {
     return moves;
   };
 
-  private computeKnightDestinations = (piece: Piece): Position[] => {
-    return [
+  private computeKnightDestinations = (piece: Piece): Position[] =>
+    [
       [piece.row + 2, piece.col + 1] as Position,
       [piece.row + 2, piece.col - 1] as Position,
       [piece.row - 2, piece.col + 1] as Position,
@@ -78,7 +76,6 @@ export class Board {
       [piece.row + 1, piece.col + 2] as Position,
       [piece.row + 1, piece.col - 2] as Position
     ].filter((position) => this.isAvailable(position) || this.isEnnemy(piece.color, position));
-  };
 
   private computeStraightMooves = (piece: Piece, dirRow: number, dirCol: number) => {
     const moves = [];
@@ -97,14 +94,12 @@ export class Board {
     return moves;
   };
 
-  private computeBishopDestinations = (piece: Piece): Position[] => {
-    return [
-      ...this.computeStraightMooves(piece, -1, -1),
-      ...this.computeStraightMooves(piece, -1, 1),
-      ...this.computeStraightMooves(piece, 1, -1),
-      ...this.computeStraightMooves(piece, 1, 1)
-    ];
-  };
+  private computeBishopDestinations = (piece: Piece): Position[] => [
+    ...this.computeStraightMooves(piece, -1, -1),
+    ...this.computeStraightMooves(piece, -1, 1),
+    ...this.computeStraightMooves(piece, 1, -1),
+    ...this.computeStraightMooves(piece, 1, 1)
+  ];
 
   private computeQueenDestinations = (piece: Piece): Position[] => {
     return [

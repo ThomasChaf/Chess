@@ -1,7 +1,7 @@
 import React from "react";
 import cn from "classnames";
+import { EPieceType, EPieceColor } from "core/index";
 import "./UiPiece.scss";
-import { EPieceType, EPieceColor } from "../../../core/game-d";
 
 interface PieceProps {
   row: number;

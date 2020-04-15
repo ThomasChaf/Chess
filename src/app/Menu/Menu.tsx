@@ -3,7 +3,7 @@ import { useMenuToggler } from "./useKeyPress";
 import "./Menu.scss";
 import { InitalState } from "./InitialState";
 import { LoadGameState } from "./LoadGameState/LoadGameState";
-import { Game } from "../../core/game";
+import { Game } from "core/index";
 
 export enum EVues {
   Initial,

@@ -1,6 +1,5 @@
 import React, { useState, ChangeEvent } from "react";
-import { parse } from "../../../core/game-parser";
-import { Game } from "../../../core/game";
+import { parse, Game } from "core/index";
 
 interface LoadGameStateProps {
   start: (game: Game) => void;

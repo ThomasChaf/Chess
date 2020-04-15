@@ -119,37 +119,29 @@ class GameFactory {
   };
 
   private parsePlay = (color: EPieceColor, playBlob: string): Play => {
-    console.log(playBlob);
     const promotion = this.parsePromotion(playBlob);
 
     if (playBlob.match(/^[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       const move = this.pawnMove(color, playBlob);
 
-      console.log(move);
       return { moves: [move], taken: null, promotion };
     }
     if (playBlob.match(/^[KQRBN][a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       const move = this.pieceMove(color, playBlob);
 
-      console.log(move);
       return { moves: [move], taken: null, promotion };
     }
     if (playBlob.match(/^[a-h]x[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       const play = this.checkEnPassant(color, playBlob);
-      if (play) {
-        console.log("En passant", play.moves);
-        return play;
-      }
+      if (play) return play;
 
       const move = this.pawnTake(color, playBlob);
 
-      console.log(move);
       return { moves: [move], taken: move.to, promotion };
     }
     if (playBlob.match(/^[KQRBN]x[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       const move = this.pieceTake(color, playBlob);
 
-      console.log(move);
       return { moves: [move], taken: move.to, promotion };
     }
     if (playBlob.match(/^O-O(-O)?(=[RKBQ])?\+?#?$/) != null) {

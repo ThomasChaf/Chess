@@ -28,6 +28,11 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "resolutions": {
+    "@typescript-eslint/eslint-plugin": "2.23.0",
+    "@typescript-eslint/parser": "2.23.0",
+    "@typescript-eslint/typescript-estree": "2.23.0"
+  },
   "eslintConfig": {
     "extends": "react-app"
   },

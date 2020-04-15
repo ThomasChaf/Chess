@@ -1,6 +1,6 @@
 import React from "react";
+import { Piece } from "core/index";
 import { UiPiece } from "./UiPiece/UiPiece";
-import { Piece } from "../../core/piece";
 import "./Board.scss";
 
 interface BoardProps {
