@@ -1,0 +1,23 @@
+.game-container {
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-controller {
+  border: 1px solid #a50d5a;
+  width: fit-content;
+  margin-top: 20px;
+  border-radius: 20px;
+  padding: 10px 15px 4px 15px;
+
+  & > i {
+    color: #a50d5a;
+    font-size: 3rem;
+    &:hover {
+      cursor: pointer;
+      color: lighten(#a50d5a, 10%);
+    }
+  }
+}

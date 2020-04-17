@@ -1,3 +1,5 @@
+import { Piece } from "./piece";
+
 export enum EPieceColor {
   White = "white",
   Black = "black"
@@ -19,8 +21,14 @@ export type Move = {
   to: Position;
 };
 
+export type Promotion = {
+  from: EPieceType;
+  to: EPieceType;
+};
+
 export type Play = {
-  moves: Move[];
-  taken: Position | null;
-  promotion: EPieceType | null;
+  move: Move;
+  rock?: Move;
+  taken?: Piece;
+  promotion?: Promotion;
 };

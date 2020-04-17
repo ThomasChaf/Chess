@@ -1,18 +1,26 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { Game } from "core/index";
-import { Board } from "./Board/Board";
+import { Game } from "core";
+import { UiGame } from "./Game/Game";
 import { Menu } from "./Menu/Menu";
 import "./App.css";
 
-const useGameManager = (): [Game, (g: Game) => void] => {
-  const [game, setGame] = useState<Game>(new Game());
+interface Datas {
+  game: Game;
+  interval: number;
+}
+
+const useGameManager = (): [Game, (g: Game, i: number) => void] => {
+  const [datas, setDatas] = useState<Datas>({ game: new Game(), interval: 0 });
+  const { game, interval } = datas;
   const update = useReducer((x) => x + 1, 0)[1];
 
   useEffect(() => {
-    const timer = game.launch(update);
+    const timer = game.launch(interval, update);
 
     return () => clearInterval(timer);
   }, [game.id]); // eslint-disable-line
+
+  const setGame = (game: Game, interval: number) => setDatas({ game, interval })
 
   return [game, setGame];
 };
@@ -23,7 +31,7 @@ export const App = () => {
   return (
     <div className="App">
       <Menu start={setGame} />
-      <Board pieces={game.board.getPieces()} />
+      <UiGame game={game} />
     </div>
   );
 };

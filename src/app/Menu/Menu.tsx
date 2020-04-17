@@ -11,7 +11,7 @@ export enum EVues {
 }
 
 interface MenuProps {
-  start: (game: Game) => void;
+  start: (game: Game, interval: number) => void;
 }
 
 export const Menu = (props: MenuProps) => {
@@ -20,9 +20,9 @@ export const Menu = (props: MenuProps) => {
 
   if (!open) return null;
 
-  const handleStart = (game: Game) => {
+  const handleStart = (game: Game, interval: number) => {
     setOpen(false);
-    props.start(game);
+    props.start(game, interval);
   };
 
   return (

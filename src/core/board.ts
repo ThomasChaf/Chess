@@ -13,12 +13,14 @@ export interface IFindPieceFilters {
 export class Board {
   private pieces: Piece[] = PIECES.map((p) => new Piece(p.type, p.color, p.row, p.col));
 
-  public promote = (position: Position, promotion: EPieceType) =>
-    this.pieces.map((piece: Piece) => {
-      if (isSameCase(position, [piece.row, piece.col])) piece.type = promotion;
+  public addPiece(piece: Piece) {
+    this.pieces.push(piece);
+  }
 
-      return piece;
-    });
+  public promote = (position: Position, promotion: EPieceType) => {
+    const piece = this.getPieceAt(position);
+    if (piece) piece.type = promotion;
+  };
 
   public getFilteredPieces = (filters: IFindPieceFilters): Piece[] =>
     this.pieces.filter(

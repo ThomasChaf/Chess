@@ -1,5 +1,5 @@
 import { generate } from "shortid";
-import { EPieceColor, EPieceType } from "./game-d";
+import { EPieceColor, EPieceType, Position } from "./game-d";
 
 export class Piece {
   public id: string = generate();
@@ -13,6 +13,10 @@ export class Piece {
     this.color = color;
     this.row = row;
     this.col = col;
+  }
+
+  get position(): Position {
+    return [this.row, this.col] as Position;
   }
 
   move(row: number, col: number) {
