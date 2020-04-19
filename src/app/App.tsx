@@ -20,7 +20,7 @@ const useGameManager = (): [Game, (g: Game, i: number) => void] => {
     return () => clearInterval(timer);
   }, [game.id]); // eslint-disable-line
 
-  const setGame = (game: Game, interval: number) => setDatas({ game, interval })
+  const setGame = (game: Game, interval: number) => setDatas({ game, interval });
 
   return [game, setGame];
 };

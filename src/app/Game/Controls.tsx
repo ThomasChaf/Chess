@@ -8,6 +8,7 @@ interface Actions {
 
 interface ControlsProps {
   actions: Actions;
+  onGoing: boolean;
 }
 
 export const Controls = (props: ControlsProps) => {
@@ -17,7 +18,7 @@ export const Controls = (props: ControlsProps) => {
         skip_previous
       </i>
       <i className="material-icons" onClick={() => props.actions.pausePlay()}>
-        play_arrow
+        {props.onGoing ? "pause" : "play_arrow"}
       </i>
       <i className="material-icons" onClick={() => props.actions.moveForward()}>
         skip_next

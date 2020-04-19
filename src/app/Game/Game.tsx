@@ -19,7 +19,7 @@ export const UiGame = (props: UiGameProps) => {
   return (
     <div className="game-container">
       <Board pieces={props.game.board.getPieces()} />
-      <Controls actions={actions} />
+      <Controls onGoing={props.game.onGoing} actions={actions} />
     </div>
   );
 };

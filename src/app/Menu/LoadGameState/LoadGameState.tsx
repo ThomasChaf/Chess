@@ -1,5 +1,7 @@
 import React, { useState, ChangeEvent } from "react";
 import { parse, Game } from "core/index";
+import { FilePicker } from "common/FilePicker/FilePicker";
+import { XButton } from "common/Button/Button";
 
 interface LoadGameStateProps {
   start: (game: Game, interval: number) => void;
@@ -34,14 +36,15 @@ export const LoadGameState = (props: LoadGameStateProps) => {
 
   return (
     <div className="menu-content">
-      <input onChange={loadGame} accept=".pgn" className="menu-option secondary" type="file" />
+      <label className="menu-label">File</label>
+      <FilePicker onChange={loadGame} accept=".pgn" />
 
       <label className="menu-label">Time interval</label>
       <input onChange={handleTimeChange} value={time} className="menu-number" type="number" />
 
-      <button disabled={!game} className="menu-start menu-option primary" onClick={handleStart}>
+      <XButton next disabled={!game} className="menu-start" onClick={handleStart}>
         Start
-      </button>
+      </XButton>
     </div>
   );
 };

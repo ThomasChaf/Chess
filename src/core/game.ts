@@ -11,6 +11,10 @@ export class Game {
   private timer: NodeJS.Timeout | null = null;
   private step: number = 0;
 
+  public get onGoing(): boolean {
+    return this.timer !== null;
+  }
+
   public play = (play: Play, save: boolean = true) => {
     if (save) this.history.push(play);
 
@@ -43,6 +47,7 @@ export class Game {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
+      cb();
     } else {
       this.launch(this.interval, cb);
     }

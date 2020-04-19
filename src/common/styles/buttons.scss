@@ -1,0 +1,21 @@
+%button {
+  font-size: 0.9em;
+  border: 0;
+  font-weight: 200;
+  text-transform: uppercase;
+  border-radius: 10px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease-in-out;
+  border-bottom: 2px solid #e0700a;
+
+  &[disabled] {
+    opacity: 0.7;
+  }
+
+  &:hover:not([disabled]) {
+    cursor: pointer;
+    transform: scale(1.1);
+  }
+}

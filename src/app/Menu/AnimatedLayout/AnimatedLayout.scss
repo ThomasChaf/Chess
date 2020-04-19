@@ -1,0 +1,25 @@
+.menu-icon {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+}
+
+.menu-container {
+  position: fixed;
+  will-change: width, height;
+  background: #f5e6da;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 30px;
+}

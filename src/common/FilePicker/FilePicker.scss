@@ -1,0 +1,11 @@
+@import "common/styles/buttons";
+
+.x-input-hidden {
+  display: none;
+}
+
+.x-input-button {
+  @extend %button;
+
+  padding: 15px 20px;
+}

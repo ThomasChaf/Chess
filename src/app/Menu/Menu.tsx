@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { useMenuToggler } from "./useKeyPress";
-import "./Menu.scss";
+import React, { useState, useRef } from "react";
+import { Game } from "core/index";
 import { InitalState } from "./InitialState";
 import { LoadGameState } from "./LoadGameState/LoadGameState";
-import { Game } from "core/index";
+import { AnimatedLayout, AnimatedLayoutRef } from "./AnimatedLayout/AnimatedLayout";
+import "./Menu.scss";
 
 export enum EVues {
   Initial,
@@ -15,24 +15,24 @@ interface MenuProps {
 }
 
 export const Menu = (props: MenuProps) => {
-  const [open, setOpen] = useMenuToggler();
+  const layoutRef = useRef<AnimatedLayoutRef>(null);
   const [vue, switchVue] = useState(EVues.Initial);
 
-  if (!open) return null;
-
   const handleStart = (game: Game, interval: number) => {
-    setOpen(false);
+    layoutRef.current?.close();
     props.start(game, interval);
   };
 
+  const onClose = () => switchVue(EVues.Initial);
+
   return (
-    <div className="menu-container">
+    <AnimatedLayout ref={layoutRef} onClose={onClose}>
       <div className="menu-box">
         <p className="menu-headline">Menu</p>
         {vue === EVues.Initial && <InitalState switchVue={switchVue} />}
 
         {vue === EVues.LoadGame && <LoadGameState start={handleStart} />}
       </div>
-    </div>
+    </AnimatedLayout>
   );
 };

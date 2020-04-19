@@ -1,0 +1,11 @@
+@import "common/styles/buttons";
+
+.x-button {
+  @extend %button;
+
+  padding: 10px 10px 10px 25px;
+}
+
+.x-button-next {
+  margin-left: auto;
+}
