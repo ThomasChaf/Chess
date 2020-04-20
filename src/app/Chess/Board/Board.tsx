@@ -1,5 +1,5 @@
 import React from "react";
-import { Piece } from "core/index";
+import { Piece } from "core/chess";
 import { UiPiece } from "./UiPiece/UiPiece";
 import "./Board.scss";
 

@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { Game } from "core";
+import { Game } from "core/chess";
 import { Board } from "./Board/Board";
 import { Controls } from "./Controls";
 import "./Game.scss";

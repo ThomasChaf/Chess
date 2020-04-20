@@ -1,15 +1,17 @@
 import React, { useState, ChangeEvent } from "react";
-import { parse, Game } from "core/index";
+import { parse, Game } from "core/chess";
 import { FilePicker } from "common/FilePicker/FilePicker";
 import { XButton } from "common/Button/Button";
+import { useHistory } from "react-router-dom";
 
 interface LoadGameStateProps {
   start: (game: Game, interval: number) => void;
 }
 
-export const LoadGameState = (props: LoadGameStateProps) => {
+export const ChessPanel = (props: LoadGameStateProps) => {
   const [game, setGame] = useState<Game | null>(null);
   const [time, setTime] = useState(1500);
+  const history = useHistory();
 
   const loadGame = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.files == null || e.currentTarget.files[0] == null) {
@@ -25,6 +27,7 @@ export const LoadGameState = (props: LoadGameStateProps) => {
       const game = parse(evt.target.result as string);
 
       setGame(game);
+      history.push("/chess");
     };
   };
 

@@ -1,4 +1,4 @@
-import { Position } from "core/game-d";
+import { Position } from "core/chess/game-d";
 
 const VAL = [0, 1, 2, 3];
 

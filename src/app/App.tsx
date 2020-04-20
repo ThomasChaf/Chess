@@ -1,37 +1,33 @@
-import React, { useState, useEffect, useReducer } from "react";
-import { Game } from "core";
-import { UiGame } from "./Game/Game";
+import React from "react";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
+import { Game } from "core/chess";
+import { UiGame } from "./Chess/Game";
 import { Menu } from "./Menu/Menu";
 import "./App.css";
+import { useGameManager } from "./Chess/useGameManager";
 
-interface Datas {
+export interface Datas {
   game: Game;
   interval: number;
 }
-
-const useGameManager = (): [Game, (g: Game, i: number) => void] => {
-  const [datas, setDatas] = useState<Datas>({ game: new Game(), interval: 0 });
-  const { game, interval } = datas;
-  const update = useReducer((x) => x + 1, 0)[1];
-
-  useEffect(() => {
-    const timer = game.launch(interval, update);
-
-    return () => clearInterval(timer);
-  }, [game.id]); // eslint-disable-line
-
-  const setGame = (game: Game, interval: number) => setDatas({ game, interval });
-
-  return [game, setGame];
-};
 
 export const App = () => {
   const [game, setGame] = useGameManager();
 
   return (
-    <div className="App">
-      <Menu start={setGame} />
-      <UiGame game={game} />
-    </div>
+    <Router>
+      <div className="App">
+        <Menu start={setGame} />
+
+        <Switch>
+          <Route path="/chess">
+            <UiGame game={game} />
+          </Route>
+          <Route path="/2048">2048</Route>
+
+          <Redirect to="/chess" />
+        </Switch>
+      </div>
+    </Router>
   );
 };
