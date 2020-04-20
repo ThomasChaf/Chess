@@ -2,6 +2,8 @@ import { Position } from "core/game-d";
 
 const VAL = [0, 1, 2, 3];
 
+type PlayArgs = [Position[], number, number];
+
 export enum Move {
   Left = 1,
   Right,
@@ -61,6 +63,10 @@ class Board {
 export class Game {
   board: Board = new Board();
 
+  constructor() {
+    this.board.addRandom();
+  }
+
   private grabNextPiece = (piece: Piece, incR: number, incC: number, next: number = 1): Piece | undefined => {
     const lookAtRow = piece.row + incR * next;
     const lookAtCol = piece.col + incC * next;
@@ -84,6 +90,7 @@ export class Game {
   };
 
   private computePlay = (from: Position[], incR: number, incC: number) => {
+    let hasPlay = false;
     from.forEach(([row, col]) => {
       VAL.forEach((deep) => {
         const lookAtRow = row + incR * deep;
@@ -96,44 +103,36 @@ export class Game {
         const nextPiece = this.grabNextPiece(piece, incR, incC);
 
         if (spacePostion) {
+          hasPlay = true;
           piece.move(...spacePostion);
         }
 
         if (nextPiece?.value === piece.value) {
+          hasPlay = true;
           piece.willDisappear = true;
           nextPiece.merge(piece);
         }
       });
     });
+    return hasPlay;
   };
 
-  private playLeft = () => {
-    const from = VAL.map((x) => [x, 0] as Position);
-    this.computePlay(from, 0, 1);
-  };
-
-  private playRight = () => {
-    const from = VAL.map((x) => [x, 3] as Position);
-    this.computePlay(from, 0, -1);
-  };
-
-  private playTop = () => {
-    const from = VAL.map((y) => [0, y] as Position);
-    this.computePlay(from, 1, 0);
-  };
-
-  private playBottom = () => {
-    const from = VAL.map((y) => [3, y] as Position);
-    this.computePlay(from, -1, 0);
-  };
+  private argsFromMove = (move: Move): PlayArgs =>
+    ({
+      [Move.Left]: [VAL.map((x) => [x, 0]), 0, 1] as PlayArgs,
+      [Move.Right]: [VAL.map((x) => [x, 3]), 0, -1] as PlayArgs,
+      [Move.Top]: [VAL.map((y) => [0, y]), 1, 0] as PlayArgs,
+      [Move.Bottom]: [VAL.map((y) => [3, y]), -1, 0] as PlayArgs
+    }[move]);
 
   public play = (move: Move) => {
-    if (move === Move.Left) this.playLeft();
-    if (move === Move.Right) this.playRight();
-    if (move === Move.Top) this.playTop();
-    if (move === Move.Bottom) this.playBottom();
+    const args = this.argsFromMove(move);
 
-    this.board.addRandom();
+    const hasPlayed = this.computePlay(...args);
+
+    if (hasPlayed) {
+      this.board.addRandom();
+    }
   };
 
   public print = () => {
