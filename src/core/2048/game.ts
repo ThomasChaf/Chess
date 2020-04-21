@@ -1,3 +1,4 @@
+import { generate } from "shortid";
 import { Position } from "core/chess/game-d";
 
 const VAL = [0, 1, 2, 3];
@@ -12,10 +13,11 @@ export enum Move {
 }
 
 class Piece {
-  col: number;
-  row: number;
-  value: number = 2;
-  willDisappear: boolean = false;
+  public id: string = generate();
+  public col: number;
+  public row: number;
+  public value: number = 2;
+  public willDisappear: boolean = false;
 
   constructor(row: number, col: number) {
     this.col = col;
@@ -36,6 +38,12 @@ class Piece {
 
 class Board {
   private pieces: Piece[] = [];
+
+  public getPieces = (): Piece[] => this.pieces;
+
+  public clean = () => {
+    this.pieces = this.pieces.filter((p) => !p.willDisappear);
+  };
 
   private getEmptyCases(): Position[] {
     const res: Position[] = [];
@@ -126,13 +134,13 @@ export class Game {
     }[move]);
 
   public play = (move: Move) => {
+    this.board.clean();
+
     const args = this.argsFromMove(move);
 
     const hasPlayed = this.computePlay(...args);
 
-    if (hasPlayed) {
-      this.board.addRandom();
-    }
+    if (hasPlayed) this.board.addRandom();
   };
 
   public print = () => {

@@ -1,0 +1,147 @@
+.big-piece {
+  position: absolute;
+  width: calc(100% / 4);
+  height: calc(100% / 4);
+  background-size: cover;
+  top: 0;
+  left: 0;
+  transition: transform 1s;
+  padding: 7px;
+  box-sizing: border-box;
+  display: flex;
+
+  @for $row from 0 through 3 {
+    @for $col from 0 through 3 {
+      &.x-#{$row}.y-#{$col} {
+        transform: translate($row * 100%, $col * 100%);
+      }
+    }
+  }
+
+  &.val-2 {
+    z-index: 1;
+
+    .big-piece-content {
+      font-size: 4rem;
+      font-weight: 800;
+      background-color: #eee4da;
+      color: #776e65;
+    }
+  }
+  &.val-4 {
+    z-index: 2;
+    .big-piece-content {
+      font-size: 4rem;
+      font-weight: 800;
+      background-color: #efc9a2;
+      color: #776e65;
+    }
+  }
+  &.val-8 {
+    z-index: 3;
+    .big-piece-content {
+      font-size: 4rem;
+      font-weight: 800;
+      color: #f9f6f2;
+      background: #f2b179;
+    }
+  }
+  &.val-16 {
+    z-index: 4;
+    .big-piece-content {
+      font-size: 4rem;
+      font-weight: 800;
+      color: #f9f6f2;
+      background: #f59563;
+    }
+  }
+  &.val-32 {
+    z-index: 5;
+    .big-piece-content {
+      font-size: 4rem;
+      font-weight: 800;
+      color: #f9f6f2;
+      background: #f67c5f;
+    }
+  }
+  &.val-64 {
+    z-index: 6;
+    .big-piece-content {
+      font-size: 4rem;
+      font-weight: 800;
+      color: #f9f6f2;
+      background: #f65e3b;
+    }
+  }
+  &.val-128 {
+    z-index: 7;
+    .big-piece-content {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #f9f6f2;
+      background: #edcf72;
+    }
+  }
+  &.val-256 {
+    z-index: 8;
+    .big-piece-content {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #f9f6f2;
+      background: #edcc61;
+    }
+  }
+  &.val-512 {
+    z-index: 9;
+    .big-piece-content {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #f9f6f2;
+      background: #edc850;
+    }
+  }
+  &.val-1024 {
+    z-index: 10;
+    .big-piece-content {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #f9f6f2;
+      background: #edc53f;
+    }
+  }
+  &.val-2048 {
+    z-index: 11;
+    .big-piece-content {
+      background: #f5c317;
+      font-size: 2.7rem;
+      font-weight: 800;
+      color: #f9f6f2;
+    }
+  }
+  &.val-4096 {
+    z-index: 12;
+    .big-piece-content {
+      font-size: 4rem;
+      font-weight: 800;
+      background-color: #ad730a;
+      color: #f9f6f2;
+    }
+  }
+  &.val-8192 {
+    z-index: 13;
+    .big-piece-content {
+      font-size: 4rem;
+      font-weight: 800;
+      background-color: #7d5203;
+      color: #f9f6f2;
+    }
+  }
+}
+
+.big-piece-content {
+  flex: 1;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
