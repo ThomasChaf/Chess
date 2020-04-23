@@ -1,4 +1,4 @@
-import { Move, EPieceColor, EPieceType, Position, Play, Promotion } from "./game-d";
+import { Move, EPieceColor, EPieceType, Position, Play, Promotion } from "./chess-d";
 import { parseCol, parseRow, parseType, isSameCase, isPawn } from "./utils";
 import { Piece } from "./piece";
 import { Game } from "./game";

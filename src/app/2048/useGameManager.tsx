@@ -1,5 +1,5 @@
 import { useState, useReducer } from "react";
-import { Game, Move } from "core/2048/game";
+import { Game, Move } from "core/2048";
 import { useKeypress } from "common/hooks/useKeypress";
 
 interface Datas {

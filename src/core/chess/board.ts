@@ -1,5 +1,5 @@
 import { PIECES } from "./initial-state";
-import { EPieceType, EPieceColor, Position, Move } from "./game-d";
+import { EPieceType, EPieceColor, Position, Move } from "./chess-d";
 import { isSameCase } from "./utils";
 import { Piece } from "./piece";
 

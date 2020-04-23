@@ -1,4 +1,4 @@
-import { EPieceType, EPieceColor } from "./game-d";
+import { EPieceType, EPieceColor } from "./chess-d";
 
 interface IPiece {
   row: number;

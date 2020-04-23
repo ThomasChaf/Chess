@@ -1,4 +1,4 @@
-import { Play } from "./game-d";
+import { Play } from "./chess-d";
 import { Board } from "./board";
 import { generate } from "shortid";
 import { reverseMove } from "./utils";

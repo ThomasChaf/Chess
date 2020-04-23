@@ -1,4 +1,4 @@
-import { Position, EPieceType, Move } from "./game-d";
+import { Position, EPieceType, Move } from "./chess-d";
 import { Piece } from "./piece";
 
 export const parseCol = (col: string): number => {

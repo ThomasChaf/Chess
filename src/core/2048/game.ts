@@ -1,72 +1,9 @@
-import { generate } from "shortid";
-import { Position } from "core/chess/game-d";
-
-const VAL = [0, 1, 2, 3];
+import { Position } from "core/chess/chess-d";
+import { Move, VAL } from "./2048-d";
+import { Piece } from "./piece";
+import { Board } from "./board";
 
 type PlayArgs = [Position[], number, number];
-
-export enum Move {
-  Left = 1,
-  Right,
-  Top,
-  Bottom
-}
-
-class Piece {
-  public id: string = generate();
-  public col: number;
-  public row: number;
-  public value: number = 2;
-  public willDisappear: boolean = false;
-
-  constructor(row: number, col: number) {
-    this.col = col;
-    this.row = row;
-  }
-
-  public move = (row: number, col: number) => {
-    this.col = col;
-    this.row = row;
-  };
-
-  public merge = (piece: Piece) => {
-    this.value *= 2;
-    this.col = piece.col;
-    this.row = piece.row;
-  };
-}
-
-class Board {
-  private pieces: Piece[] = [];
-
-  public getPieces = (): Piece[] => this.pieces;
-
-  public clean = () => {
-    this.pieces = this.pieces.filter((p) => !p.willDisappear);
-  };
-
-  private getEmptyCases(): Position[] {
-    const res: Position[] = [];
-    VAL.forEach((row) => {
-      VAL.forEach((col) => {
-        if (!this.getAt(row, col)) res.push([row, col]);
-      });
-    });
-
-    return res;
-  }
-
-  addRandom = () => {
-    const emptyCases = this.getEmptyCases();
-    const rand = Math.floor(Math.random() * Math.floor(emptyCases.length));
-    const [row, col] = emptyCases[rand];
-    this.pieces.push(new Piece(row, col));
-  };
-
-  getAt = (row: number, col: number) => {
-    return this.pieces.find((p) => p.row === row && p.col === col && !p.willDisappear);
-  };
-}
 
 export class Game {
   board: Board = new Board();
