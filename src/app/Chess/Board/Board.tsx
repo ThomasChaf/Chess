@@ -12,12 +12,12 @@ export const Board = (props: BoardProps) => {
   const cols = [1, 2, 3, 4, 5, 6, 7, 8];
 
   return (
-    <div className="board">
-      <div className="board-content">
+    <div className="chess-board">
+      <div className="chess-board-content">
         {rows.map((r) => (
-          <div key={`${r}`} className="board-row">
+          <div key={`${r}`} className="chess-board-row">
             {cols.map((c) => (
-              <div key={`${r}${c}`} className="board-case" />
+              <div key={`${r}${c}`} className="chess-board-case" />
             ))}
           </div>
         ))}

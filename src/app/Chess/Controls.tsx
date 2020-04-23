@@ -13,7 +13,7 @@ interface ControlsProps {
 
 export const Controls = (props: ControlsProps) => {
   return (
-    <div className="game-controller">
+    <div className="chess-controller">
       <i className="material-icons" onClick={() => props.actions.moveBackWard()}>
         skip_previous
       </i>

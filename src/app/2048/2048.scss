@@ -1,4 +1,4 @@
-.game-container {
+.dk48-container {
   flex: 1;
   box-shadow: 0 0 19px 3px #2a2e2f;
   width: 70vw;
@@ -9,7 +9,7 @@
   align-items: center;
 }
 
-.board {
+.dk48-board {
   position: relative;
   width: 100%;
   padding-bottom: 100%;
@@ -39,7 +39,7 @@
   box-sizing: border-box;
 }
 
-.board-big-case {
+.dk48-case {
   background-color: #ddd;
   border-radius: 5px;
 }

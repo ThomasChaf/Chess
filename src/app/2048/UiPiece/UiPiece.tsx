@@ -10,8 +10,8 @@ interface PieceProps {
 }
 
 export const UiPiece = (props: PieceProps) => {
-  const x = `x-${props.col}`;
-  const y = `y-${props.row}`;
+  const posx = `x-${props.col}`;
+  const posy = `y-${props.row}`;
 
   const ref = useRef(false);
   const [springs, set] = useSpring(() => ({
@@ -38,8 +38,8 @@ export const UiPiece = (props: PieceProps) => {
       .interpolate((s: number) => `scale(${s})`)
   };
   return (
-    <div className={cn("big-piece", `val-${props.value}`, x, y)}>
-      <animated.div style={animatedStyle} className="big-piece-content">
+    <div className={cn("dk48-piece", `val-${props.value}`, posx, posy)}>
+      <animated.div style={animatedStyle} className="dk48-piece-content">
         {props.value}
       </animated.div>
     </div>

@@ -6,13 +6,13 @@
   background-color: #fdfdfa;
 }
 
-.board {
+.chess-board {
   position: relative;
   width: 100%;
   padding-bottom: 100%;
 }
 
-.board-content {
+.chess-board-content {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -20,31 +20,31 @@
   top: 0;
 }
 
-.board-row {
+.chess-board-row {
   display: flex;
   width: 100%;
   height: calc(100% / 8);
 }
 
-.board-case {
+.chess-board-case {
   width: calc(100% / 8);
   height: 100%;
 }
 
-.board-row:nth-child(even) {
-  > .board-case:nth-child(even) {
+.chess-board-row:nth-child(even) {
+  > .chess-board-case:nth-child(even) {
     @extend %white-case;
   }
-  > .board-case:nth-child(odd) {
+  > .chess-board-case:nth-child(odd) {
     @extend %black-case;
   }
 }
 
-.board-row:nth-child(odd) {
-  > .board-case:nth-child(even) {
+.chess-board-row:nth-child(odd) {
+  > .chess-board-case:nth-child(even) {
     @extend %black-case;
   }
-  > .board-case:nth-child(odd) {
+  > .chess-board-case:nth-child(odd) {
     @extend %white-case;
   }
 }

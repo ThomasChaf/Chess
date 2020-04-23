@@ -17,7 +17,7 @@ export const UiGame = (props: UiGameProps) => {
   const actions = { moveBackWard, moveForward, pausePlay };
 
   return (
-    <div className="game-container">
+    <div className="chess-container">
       <Board pieces={props.game.board.getPieces()} />
       <Controls onGoing={props.game.onGoing} actions={actions} />
     </div>

@@ -14,5 +14,5 @@ export const UiPiece = (props: PieceProps) => {
   const x = `x-${props.col - 1}`;
   const y = `y-${8 - props.row}`;
 
-  return <div className={cn("piece", props.color, props.type, x, y)} />;
+  return <div className={cn("chess-piece", props.color, props.type, x, y)} />;
 };
