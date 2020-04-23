@@ -5,7 +5,7 @@
   background-size: cover;
   top: 0;
   left: 0;
-  transition: transform 1s;
+  transition: transform 0.3s;
   padding: 7px;
   box-sizing: border-box;
   display: flex;
@@ -121,7 +121,7 @@
   &.val-4096 {
     z-index: 12;
     .big-piece-content {
-      font-size: 4rem;
+      font-size: 2.7rem;
       font-weight: 800;
       background-color: #ad730a;
       color: #f9f6f2;
@@ -130,7 +130,7 @@
   &.val-8192 {
     z-index: 13;
     .big-piece-content {
-      font-size: 4rem;
+      font-size: 2.7rem;
       font-weight: 800;
       background-color: #7d5203;
       color: #f9f6f2;
