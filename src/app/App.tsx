@@ -4,6 +4,7 @@ import { useGameManager } from "./Chess/useGameManager";
 import { UiGame } from "./Chess/Game";
 import { Ui2048 } from "./2048/2048";
 import { Menu } from "./Menu/Menu";
+import { Workout } from "./Workout/Workout";
 import "./App.css";
 
 export const App = () => {
@@ -18,9 +19,12 @@ export const App = () => {
           <Route path="/chess">
             <UiGame game={game} />
           </Route>
+
           <Route path="/2048" component={Ui2048} />
 
-          <Redirect to="/chess" />
+          <Route path="/workout" component={Workout} />
+
+          <Redirect to="/workout" />
         </Switch>
       </div>
     </Router>

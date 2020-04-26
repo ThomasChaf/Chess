@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent } from "react";
 import { parse, Game } from "core/chess";
 import { FilePicker } from "common/FilePicker/FilePicker";
 import { XButton } from "common/Button/Button";
+import { XLabel, XInput } from "common/Elements/Elements";
 import { useHistory } from "react-router-dom";
 
 interface LoadGameStateProps {
@@ -39,11 +40,11 @@ export const ChessPanel = (props: LoadGameStateProps) => {
 
   return (
     <div className="menu-content">
-      <label className="menu-label">File</label>
+      <XLabel>File</XLabel>
       <FilePicker onChange={loadGame} accept=".pgn" />
 
-      <label className="menu-label">Time interval</label>
-      <input onChange={handleTimeChange} value={time} className="menu-number" type="number" />
+      <XLabel>Time interval</XLabel>
+      <XInput onChange={handleTimeChange} value={time} type="number" />
 
       <XButton next disabled={!game} className="menu-start" onClick={handleStart}>
         Start

@@ -9,6 +9,10 @@ interface InitialStateProps {
 
 export const NavigationPanel = (props: InitialStateProps) => (
   <div className="menu-content">
+    <XButton onClick={() => props.redirect("/workout")} next>
+      Workout
+    </XButton>
+    <br />
     <XButton onClick={() => props.switchVue(EVues.LoadGame)} next>
       Chess viewer
     </XButton>
