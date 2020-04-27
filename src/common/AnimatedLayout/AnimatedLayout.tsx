@@ -34,17 +34,11 @@ export const AnimatedLayout = forwardRef((props: AnimatedLayoutProps, ref) => {
   const animatedStyle = useSpring(isOpen ? { width: "100vw", height: "100vh" } : { width: "0vw", height: "0vh" });
 
   return (
-    <>
-      <span onClick={open} className="menu-icon material-icons">
-        menu
+    <animated.div className="menu-container" style={animatedStyle}>
+      <span onClick={close} className="menu-close material-icons">
+        close
       </span>
-
-      <animated.div className="menu-container" style={animatedStyle}>
-        <span onClick={close} className="menu-close material-icons">
-          close
-        </span>
-        {props.children}
-      </animated.div>
-    </>
+      {props.children}
+    </animated.div>
   );
 });

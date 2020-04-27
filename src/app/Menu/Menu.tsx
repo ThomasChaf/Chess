@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { Game } from "core/chess";
+import { AnimatedLayout, AnimatedLayoutRef } from "common/AnimatedLayout/AnimatedLayout";
 import { NavigationPanel } from "./NavigationPanel";
 import { ChessPanel } from "./ChessPanel/ChessPanel";
-import { AnimatedLayout, AnimatedLayoutRef } from "./AnimatedLayout/AnimatedLayout";
 import "./Menu.scss";
 
 export enum EVues {
@@ -31,15 +31,22 @@ export const Menu = (props: MenuProps) => {
   };
 
   const onClose = () => switchVue(EVues.Initial);
+  const openMenu = () => layoutRef.current?.open();
 
   return (
-    <AnimatedLayout ref={layoutRef} onClose={onClose}>
-      <div className="menu-box">
-        <p className="menu-headline">Menu</p>
-        {vue === EVues.Initial && <NavigationPanel switchVue={switchVue} redirect={redirect} />}
+    <>
+      <span onClick={openMenu} className="menu-icon material-icons">
+        menu
+      </span>
 
-        {vue === EVues.LoadGame && <ChessPanel start={handleStart} />}
-      </div>
-    </AnimatedLayout>
+      <AnimatedLayout ref={layoutRef} onClose={onClose}>
+        <div className="menu-box">
+          <p className="menu-headline">Menu</p>
+          {vue === EVues.Initial && <NavigationPanel switchVue={switchVue} redirect={redirect} />}
+
+          {vue === EVues.LoadGame && <ChessPanel start={handleStart} />}
+        </div>
+      </AnimatedLayout>
+    </>
   );
 };

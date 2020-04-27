@@ -1,3 +1,5 @@
+@import "common/styles/colors";
+
 .menu-box {
   display: flex;
   flex-direction: column;
@@ -24,5 +26,5 @@
 }
 
 .menu-start:not([disabled]) {
-  border-bottom: 2px solid #05c70e;
+  border-bottom: 2px solid $valid-green;
 }

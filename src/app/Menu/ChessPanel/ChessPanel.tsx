@@ -46,7 +46,7 @@ export const ChessPanel = (props: LoadGameStateProps) => {
       <XLabel>Time interval</XLabel>
       <XInput onChange={handleTimeChange} value={time} type="number" />
 
-      <XButton next disabled={!game} className="menu-start" onClick={handleStart}>
+      <XButton next disabled={!game} className="menu-start" onClick={handleStart} variant="valid">
         Start
       </XButton>
     </div>

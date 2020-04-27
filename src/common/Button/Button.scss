@@ -3,7 +3,19 @@
 .x-button {
   @extend %button;
 
-  padding: 10px 10px 10px 25px;
+  padding: 10px 10px 10px 10px;
+
+  &.primary {
+    border-bottom: 2px solid $secondary;
+  }
+
+  &.valid {
+    border-bottom: 2px solid $valid-green;
+  }
+
+  &.next {
+    padding: 10px 10px 10px 25px;
+  }
 }
 
 .x-button-next {

@@ -1,90 +1,90 @@
 [
   {
     "name": "Backward lunges",
-    "video": "backward-lunges.mp4"
+    "slug": "backward-lunges"
   },
   {
     "name": "Bent leg cross",
-    "video": "bent-leg-cross.mp4"
+    "slug": "bent-leg-cross"
   },
   {
     "name": "Bicycle crunches",
-    "video": "bicycle-crunches.mp4"
+    "slug": "bicycle-crunches"
   },
   {
     "name": "Crunches",
-    "video": "crunches.mp4"
+    "slug": "crunches"
   },
   {
     "name": "High plank knee crosses",
-    "video": "high-plank-knee-crosses.mp4"
+    "slug": "high-plank-knee-crosses"
   },
   {
     "name": "High plank leg lifts",
-    "video": "high-plank-leg-lifts.mp4"
+    "slug": "high-plank-leg-lifts"
   },
   {
     "name": "High plank",
-    "video": "high-plank.mp4"
+    "slug": "high-plank"
   },
   {
     "name": "180 jump squats",
-    "video": "jump-squats.mp4"
+    "slug": "jump-squats"
   },
   {
     "name": "Knee push-ups",
-    "video": "knee-push-ups.mp4"
+    "slug": "knee-push-ups"
   },
   {
     "name": "Knee tuck crunches",
-    "video": "knee-tuck-crunches.mp4"
+    "slug": "knee-tuck-crunches"
   },
   {
     "name": "Leg raises",
-    "video": "leg-raises.mp4"
+    "slug": "leg-raises"
   },
   {
     "name": "Low plank",
-    "video": "low-plank.mp4"
+    "slug": "low-plank"
   },
   {
     "name": "Low side plank",
-    "video": "low-side-plank.mp4"
+    "slug": "low-side-plank"
   },
   {
     "name": "Mountain climbers",
-    "video": "mountain-climbers.mp4"
+    "slug": "mountain-climbers"
   },
   {
     "name": "Narrow push-ups",
-    "video": "narrow-push-ups.mp4"
+    "slug": "narrow-push-ups"
   },
   {
     "name": "Push-ups",
-    "video": "push-ups.mp4"
+    "slug": "push-ups"
   },
   {
     "name": "Scissor kicks",
-    "video": "scissor-kicks.mp4"
+    "slug": "scissor-kicks"
   },
   {
     "name": "Squat to high knee",
-    "video": "squat-to-high-knee.mp4"
+    "slug": "squat-to-high-knee"
   },
   {
     "name": "Superman",
-    "video": "superman.mp4"
+    "slug": "superman"
   },
   {
     "name": "Table top crunches",
-    "video": "table-top-crunches.mp4"
+    "slug": "table-top-crunches"
   },
   {
     "name": "Wall lateral pull down",
-    "video": "wall-lateral-pull-downs.mp4"
+    "slug": "wall-lateral-pull-downs"
   },
   {
     "name": "Wall push-ups",
-    "video": "wall-push-ups.mp4"
+    "slug": "wall-push-ups"
   }
 ]
