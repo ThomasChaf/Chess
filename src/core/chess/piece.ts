@@ -1,14 +1,14 @@
 import { generate } from "shortid";
-import { EPieceColor, EPieceType, Position } from "./chess-d";
+import { PieceColor, PieceType, Position } from "./chess-d";
 
 export class Piece {
   public id: string = generate();
-  public type: EPieceType;
-  public color: EPieceColor;
+  public type: PieceType;
+  public color: PieceColor;
   public row: number;
   public col: number;
 
-  constructor(type: EPieceType, color: EPieceColor, row: number, col: number) {
+  constructor(type: PieceType, color: PieceColor, row: number, col: number) {
     this.type = type;
     this.color = color;
     this.row = row;

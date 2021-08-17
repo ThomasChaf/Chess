@@ -1,4 +1,4 @@
-import { Position, EPieceType, Move } from "./chess-d";
+import { Position, PieceType, Move } from "./chess-d";
 import { Piece } from "./piece";
 
 export const parseCol = (col: string): number => {
@@ -26,18 +26,18 @@ export const parseCol = (col: string): number => {
 
 export const parseRow = (row: string): number => parseInt(row);
 
-export const parseType = (type: string): EPieceType => {
+export const parseType = (type: string): PieceType => {
   switch (type) {
     case "Q":
-      return EPieceType.Queen;
+      return PieceType.Queen;
     case "K":
-      return EPieceType.King;
+      return PieceType.King;
     case "N":
-      return EPieceType.Knight;
+      return PieceType.Knight;
     case "R":
-      return EPieceType.Tower;
+      return PieceType.Tower;
     case "B":
-      return EPieceType.Bishop;
+      return PieceType.Bishop;
     default:
       throw new Error("Invalid piece type");
   }
@@ -45,6 +45,6 @@ export const parseType = (type: string): EPieceType => {
 
 export const isSameCase = ([r1, c1]: Position, [r2, c2]: Position): boolean => r1 === r2 && c1 === c2;
 
-export const isPawn = (piece: Piece | undefined): piece is Piece => !!piece && piece.type === EPieceType.Pawn;
+export const isPawn = (piece: Piece | undefined): piece is Piece => !!piece && piece.type === PieceType.Pawn;
 
 export const reverseMove = ({ from, to }: Move): Move => ({ from: to, to: from });

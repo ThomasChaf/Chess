@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, FC } from "react";
 import { useHistory } from "react-router-dom";
 
 import { Game } from "core/chess";
@@ -19,17 +19,16 @@ interface MenuProps {
   start: (game: Game, interval: number) => void;
 }
 
-export const Menu = (props: MenuProps) => {
+export const Menu: FC<MenuProps> = ({ start }) => {
   const layoutRef = useRef<AnimatedLayoutRef>(null);
   const [vue, switchVue] = useState(Views.Initial);
   const history = useHistory();
 
   const handleStart = (game: Game, interval: number) => {
     redirect("/chess");
-
+    game.interval = interval;
     layoutRef.current?.close();
-    console.log("start:", game);
-    props.start(game, interval);
+    start(game, interval);
   };
 
   const redirect = (path: string) => {

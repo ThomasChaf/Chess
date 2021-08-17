@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { Game } from "core/chess";
 
 export function useActions(game: Game) {
@@ -15,9 +15,13 @@ export function useActions(game: Game) {
   };
 
   const pausePlay = () => {
-    game.playPause();
-    update();
+    game.playPause(update);
   };
+
+  useEffect(() => {
+    const timer = game.launch(update);
+    return () => clearInterval(timer);
+  }, [game.id]); // eslint-disable-line
 
   return { moveBackWard, moveForward, pausePlay };
 }

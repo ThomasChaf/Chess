@@ -7,13 +7,13 @@ export class Game {
   public id: string = generate();
   public board: Board = new Board();
   public history: Play[] = [];
-  private interval: number = 0;
+  public interval: number = 0;
   private timer: NodeJS.Timeout | null = null;
   private step: number = 0;
 
-  public get onGoing(): boolean {
+  public onGoing = (): boolean => {
     return this.timer !== null;
-  }
+  };
 
   public play = (play: Play, save: boolean = true) => {
     if (save) this.history.push(play);
@@ -26,8 +26,7 @@ export class Game {
     if (play.promotion) this.board.promote(play.move.to, play.promotion.to);
   };
 
-  public launch = (interval: number): NodeJS.Timeout => {
-    this.interval = interval;
+  public launch = (update: () => void): NodeJS.Timeout => {
     this.timer = setInterval(() => {
       if (this.timer && !this.history[this.step]) {
         clearInterval(this.timer);
@@ -37,17 +36,19 @@ export class Game {
 
       this.play(this.history[this.step], false);
       this.step += 1;
-    }, interval);
+      update();
+    }, this.interval);
 
     return this.timer;
   };
 
-  public playPause = () => {
+  public playPause = (update: () => void) => {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
+      update();
     } else {
-      this.launch(this.interval);
+      this.launch(update);
     }
   };
 

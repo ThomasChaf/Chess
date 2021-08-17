@@ -1,13 +1,13 @@
 import { PIECES } from "./initial-state";
-import { EPieceType, EPieceColor, Position, Move } from "./chess-d";
+import { PieceType, PieceColor, Position, Move } from "./chess-d";
 import { isSameCase } from "./utils";
 import { Piece } from "./piece";
 
 export interface IFindPieceFilters {
   row?: number;
   col?: number;
-  type?: EPieceType;
-  color?: EPieceColor;
+  type?: PieceType;
+  color?: PieceColor;
 }
 
 export class Board {
@@ -17,7 +17,7 @@ export class Board {
     this.pieces.push(piece);
   }
 
-  public promote = (position: Position, promotion: EPieceType) => {
+  public promote = (position: Position, promotion: PieceType) => {
     const piece = this.getPieceAt(position);
     if (piece) piece.type = promotion;
   };
@@ -41,19 +41,18 @@ export class Board {
     return !this.getPieceAt(position);
   };
 
-  private isEnnemy = (color: EPieceColor, position: Position): boolean => {
+  private isEnnemy = (color: PieceColor, position: Position): boolean => {
     const piece = this.getPieceAt(position);
 
     return !!piece && piece.color !== color;
   };
 
   private computePawnDestinations = (piece: Piece): Position[] => {
-    const isWhite = piece.color === EPieceColor.White;
+    const isWhite = piece.color === PieceColor.White;
     const inc: number = isWhite ? 1 : -1;
-    const moves = [
-      [piece.row + inc, piece.col - 1] as Position,
-      [piece.row + inc, piece.col + 1] as Position
-    ].filter((position: Position) => this.isEnnemy(piece.color, position));
+    const moves = [[piece.row + inc, piece.col - 1] as Position, [piece.row + inc, piece.col + 1] as Position].filter(
+      (position: Position) => this.isEnnemy(piece.color, position)
+    );
 
     const maxInc = (isWhite && piece.row === 2) || (!isWhite && piece.row === 7) ? 2 : 1;
 
@@ -142,17 +141,17 @@ export class Board {
 
   private allowedDestination = (piece: Piece): Position[] => {
     switch (piece.type) {
-      case EPieceType.Pawn:
+      case PieceType.Pawn:
         return this.computePawnDestinations(piece);
-      case EPieceType.Knight:
+      case PieceType.Knight:
         return this.computeKnightDestinations(piece);
-      case EPieceType.Bishop:
+      case PieceType.Bishop:
         return this.computeBishopDestinations(piece);
-      case EPieceType.Queen:
+      case PieceType.Queen:
         return this.computeQueenDestinations(piece);
-      case EPieceType.Tower:
+      case PieceType.Tower:
         return this.computeTowerDestinations(piece);
-      case EPieceType.King:
+      case PieceType.King:
         return this.computeKingDestinations(piece);
       default:
         throw new Error("Not implemented pieced");

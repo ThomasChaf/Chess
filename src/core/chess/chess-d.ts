@@ -1,11 +1,11 @@
 import { Piece } from "./piece";
 
-export enum EPieceColor {
+export enum PieceColor {
   White = "white",
   Black = "black"
 }
 
-export enum EPieceType {
+export enum PieceType {
   Pawn = "pawn",
   King = "king",
   Queen = "queen",
@@ -22,8 +22,8 @@ export type Move = {
 };
 
 export type Promotion = {
-  from: EPieceType;
-  to: EPieceType;
+  from: PieceType;
+  to: PieceType;
 };
 
 export type Play = {

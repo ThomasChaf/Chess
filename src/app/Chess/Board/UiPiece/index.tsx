@@ -1,15 +1,15 @@
 import React from "react";
 import cn from "classnames";
 
-import { EPieceType, EPieceColor } from "core/chess";
+import { PieceType, PieceColor } from "core/chess";
 
 import "./uiPiece.scss";
 
 interface PieceProps {
   row: number;
   col: number;
-  color: EPieceColor;
-  type: EPieceType;
+  color: PieceColor;
+  type: PieceType;
 }
 
 export const UiPiece = (props: PieceProps) => {
