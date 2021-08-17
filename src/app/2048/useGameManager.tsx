@@ -1,11 +1,7 @@
 import { useState, useReducer } from "react";
+
 import { Game, Move } from "core/2048";
 import { useKeypress } from "common/hooks/useKeypress";
-
-interface Datas {
-  game: Game;
-  interval: number;
-}
 
 export const useGameManager = (): Game => {
   const [game] = useState(new Game());

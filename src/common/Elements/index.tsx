@@ -1,5 +1,6 @@
 import React, { ReactNode, ChangeEvent } from "react";
-import "./Elements.scss";
+
+import "./elements.scss";
 
 interface XLabelProps {
   children: ReactNode;

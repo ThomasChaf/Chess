@@ -1,7 +1,9 @@
 import React from "react";
 import { Piece } from "core/chess";
-import { UiPiece } from "./UiPiece/UiPiece";
-import "./Board.scss";
+
+import { UiPiece } from "./uiPiece";
+
+import "./board.scss";
 
 interface BoardProps {
   pieces: Piece[];

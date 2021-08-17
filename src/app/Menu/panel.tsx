@@ -1,9 +1,11 @@
 import React from "react";
-import { XButton } from "common/Button/Button";
-import { EVues } from "./Menu";
+
+import { XButton } from "common/button";
+
+import { Views } from "./index";
 
 interface InitialStateProps {
-  switchVue: (vue: EVues) => void;
+  switchVue: (vue: Views) => void;
   redirect: (path: string) => void;
 }
 
@@ -13,8 +15,8 @@ export const NavigationPanel = (props: InitialStateProps) => (
       Workout
     </XButton>
     <br />
-    <XButton onClick={() => props.switchVue(EVues.LoadGame)} next>
-      Chess viewer
+    <XButton onClick={() => props.switchVue(Views.LoadGame)} next>
+      Chess
     </XButton>
     <br />
     <XButton onClick={() => props.redirect("/2048")} next>

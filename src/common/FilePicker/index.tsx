@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-import "./FilePicker.scss";
+
+import "./filePicker.scss";
 
 const PLACEHOLDER = "Select a file";
 

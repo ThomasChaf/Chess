@@ -26,7 +26,7 @@ export class Game {
     if (play.promotion) this.board.promote(play.move.to, play.promotion.to);
   };
 
-  public launch = (interval: number, cb: () => void): NodeJS.Timeout => {
+  public launch = (interval: number): NodeJS.Timeout => {
     this.interval = interval;
     this.timer = setInterval(() => {
       if (this.timer && !this.history[this.step]) {
@@ -37,23 +37,21 @@ export class Game {
 
       this.play(this.history[this.step], false);
       this.step += 1;
-      cb();
     }, interval);
 
     return this.timer;
   };
 
-  public playPause = (cb: () => void) => {
+  public playPause = () => {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
-      cb();
     } else {
-      this.launch(this.interval, cb);
+      this.launch(this.interval);
     }
   };
 
-  public moveBackWard = (cb: () => void) => {
+  public moveBackWard = () => {
     if (this.step === 0) return;
 
     this.step -= 1;
@@ -67,15 +65,12 @@ export class Game {
     if (lastPlay.taken) {
       this.board.addPiece(lastPlay.taken);
     }
-
-    cb();
   };
 
-  public moveForward = (cb: () => void) => {
+  public moveForward = () => {
     if (!this.history[this.step]) return;
 
     this.play(this.history[this.step], false);
     this.step += 1;
-    cb();
   };
 }

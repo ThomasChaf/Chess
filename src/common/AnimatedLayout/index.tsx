@@ -1,7 +1,9 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { useSpring, animated } from "react-spring";
+
 import { useKeypress } from "common/hooks/useKeypress";
-import "./AnimatedLayout.scss";
+
+import "./animatedLayout.scss";
 
 export interface AnimatedLayoutRef {
   open: () => void;

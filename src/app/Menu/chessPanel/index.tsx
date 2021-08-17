@@ -1,22 +1,23 @@
 import React, { useState, ChangeEvent } from "react";
-import { parse, Game } from "core/chess";
-import { FilePicker } from "common/FilePicker/FilePicker";
-import { XButton } from "common/Button/Button";
-import { XLabel, XInput } from "common/Elements/Elements";
 import { useHistory } from "react-router-dom";
 
-interface LoadGameStateProps {
-  start: (game: Game, interval: number) => void;
-}
+import { parse, Game } from "core/chess";
+
+import { FilePicker } from "common/filePicker";
+import { XButton } from "common/button";
+import { XLabel, XInput } from "common/elements";
+
+import { LoadGameStateProps } from "./chessPanel.d";
 
 export const ChessPanel = (props: LoadGameStateProps) => {
-  const [game, setGame] = useState<Game | null>(null);
+  const [defaultGame] = useState<Game>(new Game());
+  const [game, setGame] = useState<Game>(defaultGame);
   const [time, setTime] = useState(1500);
   const history = useHistory();
 
   const loadGame = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.files == null || e.currentTarget.files[0] == null) {
-      setGame(null);
+      setGame(defaultGame);
       return;
     }
 
@@ -35,7 +36,7 @@ export const ChessPanel = (props: LoadGameStateProps) => {
   const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => setTime(parseInt(e.target?.value));
 
   const handleStart = () => {
-    if (game) props.start(game, time);
+    props.start(game, time);
   };
 
   return (
@@ -46,7 +47,7 @@ export const ChessPanel = (props: LoadGameStateProps) => {
       <XLabel>Time interval</XLabel>
       <XInput onChange={handleTimeChange} value={time} type="number" />
 
-      <XButton next disabled={!game} className="menu-start" onClick={handleStart} variant="valid">
+      <XButton next className="menu-start" onClick={handleStart} variant="valid">
         Start
       </XButton>
     </div>

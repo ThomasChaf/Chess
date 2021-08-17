@@ -1,8 +1,9 @@
 import React, { HtmlHTMLAttributes } from "react";
 import cn from "classnames";
-import "./Button.scss";
 
-interface XbuttonProps {
+import "./button.scss";
+
+interface ButtonProps {
   disabled?: boolean;
   next?: boolean;
   variant?: string;
@@ -13,7 +14,7 @@ export const XButton = ({
   className,
   variant = "primary",
   ...props
-}: HtmlHTMLAttributes<HTMLButtonElement> & XbuttonProps) => (
+}: HtmlHTMLAttributes<HTMLButtonElement> & ButtonProps) => (
   <button className={cn(className, { next }, variant, "x-button")} {...props}>
     {props.children}
 

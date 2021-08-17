@@ -1,12 +1,16 @@
 import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
-import { Game } from "core/chess";
-import { AnimatedLayout, AnimatedLayoutRef } from "common/AnimatedLayout/AnimatedLayout";
-import { NavigationPanel } from "./NavigationPanel";
-import { ChessPanel } from "./ChessPanel/ChessPanel";
-import "./Menu.scss";
 
-export enum EVues {
+import { Game } from "core/chess";
+
+import { AnimatedLayout, AnimatedLayoutRef } from "common/animatedLayout";
+
+import { NavigationPanel } from "./panel";
+import { ChessPanel } from "./chessPanel";
+
+import "./menu.scss";
+
+export enum Views {
   Initial,
   LoadGame
 }
@@ -17,11 +21,14 @@ interface MenuProps {
 
 export const Menu = (props: MenuProps) => {
   const layoutRef = useRef<AnimatedLayoutRef>(null);
-  const [vue, switchVue] = useState(EVues.Initial);
+  const [vue, switchVue] = useState(Views.Initial);
   const history = useHistory();
 
   const handleStart = (game: Game, interval: number) => {
+    redirect("/chess");
+
     layoutRef.current?.close();
+    console.log("start:", game);
     props.start(game, interval);
   };
 
@@ -30,7 +37,7 @@ export const Menu = (props: MenuProps) => {
     history.push(path);
   };
 
-  const onClose = () => switchVue(EVues.Initial);
+  const onClose = () => switchVue(Views.Initial);
   const openMenu = () => layoutRef.current?.open();
 
   return (
@@ -42,9 +49,9 @@ export const Menu = (props: MenuProps) => {
       <AnimatedLayout ref={layoutRef} onClose={onClose}>
         <div className="menu-box">
           <p className="menu-headline">Menu</p>
-          {vue === EVues.Initial && <NavigationPanel switchVue={switchVue} redirect={redirect} />}
+          {vue === Views.Initial && <NavigationPanel switchVue={switchVue} redirect={redirect} />}
 
-          {vue === EVues.LoadGame && <ChessPanel start={handleStart} />}
+          {vue === Views.LoadGame && <ChessPanel start={handleStart} />}
         </div>
       </AnimatedLayout>
     </>

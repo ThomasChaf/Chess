@@ -1,7 +1,10 @@
 import React, { useRef } from "react";
-import { AnimatedLayoutRef } from "common/AnimatedLayout/AnimatedLayout";
-import { XButton } from "common/Button/Button";
+
+import { AnimatedLayoutRef } from "common/animatedLayout";
+import { XButton } from "common/button";
+
 import { ExercicePicker } from "./ExercicePicker";
+
 import "./Creator.scss";
 
 export const Creator = () => {

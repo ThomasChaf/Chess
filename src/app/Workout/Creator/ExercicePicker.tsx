@@ -1,8 +1,9 @@
 import React, { forwardRef, useState } from "react";
 import cn from "classnames";
-import { AnimatedLayout } from "common/AnimatedLayout/AnimatedLayout";
+
+import { AnimatedLayout } from "common/animatedLayout";
 import { EXERCICES, Exercice } from "core/workout";
-import { XButton } from "common/Button/Button";
+import { XButton } from "common/button";
 
 type SelectedState = {
   [key: string]: Exercice | null;

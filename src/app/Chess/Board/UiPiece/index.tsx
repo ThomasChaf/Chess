@@ -1,7 +1,9 @@
 import React from "react";
 import cn from "classnames";
+
 import { EPieceType, EPieceColor } from "core/chess";
-import "./UiPiece.scss";
+
+import "./uiPiece.scss";
 
 interface PieceProps {
   row: number;
