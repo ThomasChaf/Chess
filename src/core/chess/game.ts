@@ -74,4 +74,11 @@ export class Game {
     this.play(this.history[this.step], false);
     this.step += 1;
   };
+
+  public moveForwardTo = (step: number) => {
+    const move = (step - 1) * 2;
+    for (let i = 0; i <= move; i++) {
+      this.moveForward();
+    }
+  };
 }

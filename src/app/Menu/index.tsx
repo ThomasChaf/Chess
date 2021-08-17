@@ -16,7 +16,7 @@ export enum Views {
 }
 
 interface MenuProps {
-  start: (game: Game, interval: number) => void;
+  start: (game: Game) => void;
 }
 
 export const Menu: FC<MenuProps> = ({ start }) => {
@@ -24,11 +24,12 @@ export const Menu: FC<MenuProps> = ({ start }) => {
   const [vue, switchVue] = useState(Views.Initial);
   const history = useHistory();
 
-  const handleStart = (game: Game, interval: number) => {
+  const handleStart = (game: Game, interval: number, step: number) => {
     redirect("/chess");
     game.interval = interval;
+    game.moveForwardTo(step);
     layoutRef.current?.close();
-    start(game, interval);
+    start(game);
   };
 
   const redirect = (path: string) => {
