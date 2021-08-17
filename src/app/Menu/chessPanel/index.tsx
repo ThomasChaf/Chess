@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { FC, useState, ChangeEvent } from "react";
 import { useHistory } from "react-router-dom";
 
 import { parse, Game } from "core/chess";
@@ -8,13 +8,13 @@ import { XButton } from "common/button";
 import { XLabel, XInput } from "common/elements";
 
 import { LoadGameStateProps } from "./chessPanel.d";
-import { FC } from "react";
 
 export const ChessPanel: FC<LoadGameStateProps> = ({ start }) => {
   const [defaultGame] = useState<Game>(new Game());
   const [game, setGame] = useState<Game>(defaultGame);
   const [time, setTime] = useState(1500);
   const [step, setStep] = useState(0);
+  const [autoplay, setAutoplay] = useState(false);
   const history = useHistory();
 
   const loadGame = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,8 +37,9 @@ export const ChessPanel: FC<LoadGameStateProps> = ({ start }) => {
 
   const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => setTime(parseInt(e.target?.value));
   const handleMoveChange = (e: ChangeEvent<HTMLInputElement>) => setStep(parseInt(e.target?.value));
+  const handleAutoplayChange = (e: ChangeEvent<HTMLInputElement>) => setAutoplay(!autoplay);
 
-  const handleStart = () => start(game, time, step);
+  const handleStart = () => start(game, time, step, autoplay);
 
   return (
     <div className="menu-content">
@@ -50,6 +51,9 @@ export const ChessPanel: FC<LoadGameStateProps> = ({ start }) => {
 
       <XLabel>Move</XLabel>
       <XInput onChange={handleMoveChange} value={step} type="number" />
+
+      <XLabel>Autoplay</XLabel>
+      <XInput onChange={handleAutoplayChange} type="checkbox" />
 
       <XButton next className="menu-start" onClick={handleStart} variant="valid">
         Start

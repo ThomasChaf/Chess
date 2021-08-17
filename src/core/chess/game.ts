@@ -4,6 +4,7 @@ import { generate } from "shortid";
 import { reverseMove } from "./utils";
 
 export class Game {
+  public autoplay: boolean = false;
   public id: string = generate();
   public board: Board = new Board();
   public history: Play[] = [];

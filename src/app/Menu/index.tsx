@@ -24,8 +24,9 @@ export const Menu: FC<MenuProps> = ({ start }) => {
   const [vue, switchVue] = useState(Views.Initial);
   const history = useHistory();
 
-  const handleStart = (game: Game, interval: number, step: number) => {
+  const handleStart = (game: Game, interval: number, step: number, autoplay: boolean) => {
     redirect("/chess");
+    game.autoplay = autoplay;
     game.interval = interval;
     game.moveForwardTo(step);
     layoutRef.current?.close();

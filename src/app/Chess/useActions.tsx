@@ -19,6 +19,8 @@ export function useActions(game: Game) {
   };
 
   useEffect(() => {
+    if (!game.autoplay) return;
+
     const timer = game.launch(update);
     return () => clearInterval(timer);
   }, [game.id]); // eslint-disable-line

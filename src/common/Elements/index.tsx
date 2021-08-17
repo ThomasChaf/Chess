@@ -9,7 +9,7 @@ export const XLabel = (props: XLabelProps) => <label className="x-label">{props.
 
 interface XInputProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  value: string | number;
+  value?: string | number;
   type: string;
 }
 export const XInput = (props: XInputProps) => <input className="x-input" {...props} />;
