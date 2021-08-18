@@ -1,5 +1,5 @@
 import { Move, PieceColor, PieceType, Position, Play, Promotion } from "./chess-d";
-import { parseCol, parseRow, parseType, isSameCase, isPawn } from "./utils";
+import { parseCol, parseRow, parseType, isSameBox, isPawn } from "./utils";
 import { Piece } from "./piece";
 import { Game } from "./game";
 
@@ -21,7 +21,7 @@ class GameFactory {
       ? [parseRow(moveBlob[3]), parseCol(moveBlob[2])]
       : [parseRow(moveBlob[2]), parseCol(moveBlob[1])];
 
-    const piece: Piece = this.game.board.findPiece({ type, col, color }, to);
+    const piece = this.game.board.findPiece({ type, col, color }, to);
 
     return { from: piece.position, to };
   };
@@ -41,7 +41,7 @@ class GameFactory {
 
     const enPassantPosition = [lastMove.to[0] - (color === PieceColor.White ? -1 : 1), lastMove.to[1]] as Position;
 
-    if (isSameCase(to, enPassantPosition)) {
+    if (isSameBox(to, enPassantPosition)) {
       return {
         move: { from: pawn.position, to },
         taken: this.game.board.getPieceAt(lastMove.to)
@@ -61,8 +61,6 @@ class GameFactory {
   };
 
   private pieceTake = (color: PieceColor, moveBlob: string, withColumn: boolean = false): Move => {
-    console.log(moveBlob);
-
     const type = parseType(moveBlob[0]);
     const col = withColumn ? parseCol(moveBlob[1]) : 0;
     const to: Position = withColumn
@@ -114,7 +112,7 @@ class GameFactory {
     return { from: piece.type, to: parseType(res[1]) };
   };
 
-  private computePrimitifPlay = (color: PieceColor, playBlob: string): Play => {
+  private computeRawPlay = (color: PieceColor, playBlob: string): Play => {
     if (playBlob.match(/^[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       return { move: this.pawnMove(color, playBlob) };
     }
@@ -155,7 +153,7 @@ class GameFactory {
     if (playBlob.match(/^(1-0)|(0-1)|(1\/2-1\/2)$/) != null) {
       return null;
     }
-    const play = this.computePrimitifPlay(color, playBlob);
+    const play = this.computeRawPlay(color, playBlob);
 
     if (!play.taken) play.taken = this.game.board.getPieceAt(play.move.to);
 

@@ -1,5 +1,7 @@
-import { Position, PieceType, Move } from "./chess-d";
+import { Position, PieceType, Move, PieceColor } from "./chess-d";
 import { Piece } from "./piece";
+
+export const opponentColor = (color: PieceColor) => (color === PieceColor.White ? PieceColor.Black : PieceColor.White);
 
 export const parseCol = (col: string): number => {
   switch (col.toLowerCase()) {
@@ -43,7 +45,7 @@ export const parseType = (type: string): PieceType => {
   }
 };
 
-export const isSameCase = ([r1, c1]: Position, [r2, c2]: Position): boolean => r1 === r2 && c1 === c2;
+export const isSameBox = ([r1, c1]: Position, [r2, c2]: Position): boolean => r1 === r2 && c1 === c2;
 
 export const isPawn = (piece: Piece | undefined): piece is Piece => !!piece && piece.type === PieceType.Pawn;
 
