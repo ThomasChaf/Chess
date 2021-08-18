@@ -1,4 +1,4 @@
-import { Move, PieceColor, PieceType, Position, Play, Promotion } from "./chess-d";
+import { PieceColor, PieceType, Position, Play, Promotion } from "./chess-d";
 import { parseCol, parseRow, parseType, isSameBox, isPawn } from "./utils";
 import { Piece } from "./piece";
 import { Game } from "./game";
@@ -6,15 +6,15 @@ import { Game } from "./game";
 class GameFactory {
   private game: Game = new Game();
 
-  private pawnMove = (color: PieceColor, moveBlob: string): Move => {
+  private pawnPlay = (color: PieceColor, moveBlob: string): Play => {
     const to = [parseRow(moveBlob[1]), parseCol(moveBlob[0])] as Position;
 
-    const piece: Piece = this.game.board.findPiece({ type: PieceType.Pawn, color }, to);
+    const piece = this.game.board.findPiece({ type: PieceType.Pawn, color }, to);
 
-    return { from: piece.position, to };
+    return { move: { from: piece.position, to }, piece };
   };
 
-  private pieceMove = (color: PieceColor, moveBlob: string, withColumn: boolean = false): Move => {
+  private piecePlay = (color: PieceColor, moveBlob: string, withColumn: boolean = false): Play => {
     const type = parseType(moveBlob[0]);
     const col = withColumn ? parseCol(moveBlob[1]) : 0;
     const to: Position = withColumn
@@ -23,7 +23,7 @@ class GameFactory {
 
     const piece = this.game.board.findPiece({ type, col, color }, to);
 
-    return { from: piece.position, to };
+    return { move: { from: piece.position, to }, piece };
   };
 
   private checkEnPassant = (color: PieceColor, moveBlob: string): Play | null => {
@@ -32,10 +32,9 @@ class GameFactory {
     const lastPlay = this.game.history[this.game.history.length - 1];
     if (!lastPlay) return null;
     const lastMove = lastPlay.move;
-    const lastMovedPiece = this.game.board.getPieceAt(lastMove.to);
     const pawn = this.game.board.getPieceAt([lastMove.to[0], col]);
 
-    if (!isPawn(pawn) || pawn.color !== color || !isPawn(lastMovedPiece)) return null;
+    if (!isPawn(pawn) || pawn.color !== color || !isPawn(lastPlay.piece)) return null;
 
     if (lastMove.to[0] - lastMove.from[0] !== 2) return null;
 
@@ -44,6 +43,7 @@ class GameFactory {
     if (isSameBox(to, enPassantPosition)) {
       return {
         move: { from: pawn.position, to },
+        piece: pawn,
         taken: this.game.board.getPieceAt(lastMove.to)
       };
     }
@@ -51,16 +51,16 @@ class GameFactory {
     return null;
   };
 
-  private pawnTake = (color: PieceColor, moveBlob: string): Move => {
+  private pawnTake = (color: PieceColor, moveBlob: string): Play => {
     const col = parseCol(moveBlob[0]);
     const to = [parseRow(moveBlob[3]), parseCol(moveBlob[2])] as Position;
 
     const piece: Piece = this.game.board.findPiece({ type: PieceType.Pawn, color, col }, to);
 
-    return { from: piece.position, to };
+    return { move: { from: piece.position, to }, piece };
   };
 
-  private pieceTake = (color: PieceColor, moveBlob: string, withColumn: boolean = false): Move => {
+  private pieceTake = (color: PieceColor, moveBlob: string, withColumn: boolean = false): Play => {
     const type = parseType(moveBlob[0]);
     const col = withColumn ? parseCol(moveBlob[1]) : 0;
     const to: Position = withColumn
@@ -69,35 +69,40 @@ class GameFactory {
 
     const piece: Piece = this.game.board.findPiece({ type, color, col }, to);
 
-    return { from: piece.position, to };
+    return { move: { from: piece.position, to }, piece };
   };
 
-  private kingRock = (color: PieceColor, moveBlob: string): Move[] => {
+  private kingRock = (color: PieceColor, moveBlob: string): Play => {
     const isQueenSideRock = moveBlob.match(/O-O-O/) != null;
+    const king = this.game.board.getPieces({ type: PieceType.King, color })[0];
 
     if (color === PieceColor.White && isQueenSideRock) {
-      return [
-        { from: [1, 5], to: [1, 3] },
-        { from: [1, 1], to: [1, 4] }
-      ];
+      return {
+        move: { from: [1, 5], to: [1, 3] },
+        rock: { from: [1, 1], to: [1, 4] },
+        piece: king
+      };
     }
     if (color === PieceColor.White && !isQueenSideRock) {
-      return [
-        { from: [1, 5], to: [1, 7] },
-        { from: [1, 8], to: [1, 6] }
-      ];
+      return {
+        move: { from: [1, 5], to: [1, 7] },
+        rock: { from: [1, 8], to: [1, 6] },
+        piece: king
+      };
     }
     if (color === PieceColor.Black && isQueenSideRock) {
-      return [
-        { from: [8, 5], to: [8, 3] },
-        { from: [8, 1], to: [8, 4] }
-      ];
+      return {
+        move: { from: [8, 5], to: [8, 3] },
+        rock: { from: [8, 1], to: [8, 4] },
+        piece: king
+      };
     }
     if (color === PieceColor.Black && !isQueenSideRock) {
-      return [
-        { from: [8, 5], to: [8, 7] },
-        { from: [8, 8], to: [8, 6] }
-      ];
+      return {
+        move: { from: [8, 5], to: [8, 7] },
+        rock: { from: [8, 8], to: [8, 6] },
+        piece: king
+      };
     }
 
     throw new Error("This rock is impossible");
@@ -114,36 +119,34 @@ class GameFactory {
 
   private computeRawPlay = (color: PieceColor, playBlob: string): Play => {
     if (playBlob.match(/^[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
-      return { move: this.pawnMove(color, playBlob) };
+      return this.pawnPlay(color, playBlob);
     }
 
     if (playBlob.match(/^[KQRBN][a-h]\d(=[RKBQ])?\+?#?$/) != null) {
-      return { move: this.pieceMove(color, playBlob) };
+      return this.piecePlay(color, playBlob);
     }
 
     if (playBlob.match(/^[KQRBN][a-h][a-h]\d(=[RKBQ])?\+?#?$/) != null) {
-      return { move: this.pieceMove(color, playBlob, true) };
+      return this.piecePlay(color, playBlob, true);
     }
 
     if (playBlob.match(/^[a-h]x[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
       const play = this.checkEnPassant(color, playBlob);
       if (play) return play;
 
-      return { move: this.pawnTake(color, playBlob) };
+      return this.pawnTake(color, playBlob);
     }
 
     if (playBlob.match(/^[KQRBN]x[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
-      return { move: this.pieceTake(color, playBlob) };
+      return this.pieceTake(color, playBlob);
     }
 
     if (playBlob.match(/^[KQRBN][a-h]x[a-h]\d(=[RKBQ])?\+?#?$/) != null) {
-      return { move: this.pieceTake(color, playBlob, true) };
+      return this.pieceTake(color, playBlob, true);
     }
 
     if (playBlob.match(/^O-O(-O)?(=[RKBQ])?\+?#?$/) != null) {
-      const [move, rock] = this.kingRock(color, playBlob);
-
-      return { move, rock };
+      return this.kingRock(color, playBlob);
     }
 
     throw new Error(`Not implemented play ${playBlob}`);

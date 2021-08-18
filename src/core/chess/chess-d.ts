@@ -28,6 +28,7 @@ export type Promotion = {
 
 export type Play = {
   move: Move;
+  piece: Piece;
   rock?: Move;
   taken?: Piece;
   promotion?: Promotion;
