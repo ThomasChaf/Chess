@@ -12,6 +12,10 @@ export class Game {
   private timer: NodeJS.Timeout | null = null;
   private step: number = 0;
 
+  public getPlay = (): Play | undefined => {
+    return this.history[this.step];
+  };
+
   public onGoing = (): boolean => {
     return this.timer !== null;
   };

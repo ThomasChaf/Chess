@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import { PIECES } from "./initial-state";
-import { PieceType, PieceColor, Position, Move } from "./chess-d";
+import { PieceType, PieceColor, Position, Move, Play } from "./chess-d";
 import { isSameBox, opponentColor } from "./utils";
 import { Piece } from "./piece";
 
@@ -13,7 +13,17 @@ export interface PieceFilters {
 }
 
 export class Board {
-  public pieces: Piece[] = PIECES.map((p) => new Piece(p.type, p.color, p.row, p.col));
+  public pieces: Piece[];
+
+  static copy(board: Board) {
+    const pieces = board.pieces.map((piece) => Piece.copy(piece));
+
+    return new Board(pieces);
+  }
+
+  constructor(pieces: Piece[] = PIECES.map((p) => new Piece(p.type, p.color, p.row, p.col))) {
+    this.pieces = pieces;
+  }
 
   public addPiece(piece: Piece) {
     this.pieces.push(piece);
@@ -36,8 +46,9 @@ export class Board {
     );
   };
 
-  public getPieceAt = (position: Position): Piece | undefined =>
-    this.pieces.find((p) => isSameBox([p.row, p.col], position));
+  public getPieceAt = (position: Position): Piece | undefined => {
+    return this.pieces.find((p) => isSameBox([p.row, p.col], position));
+  };
 
   private isExisting = (position: Position): boolean => {
     const [row, col] = position;
@@ -91,7 +102,7 @@ export class Board {
     for (let i = 1; i <= maxInc; i++) {
       const virtualPosition: Position = [piece.row + i * inc, piece.col];
 
-      if (this.isExisting(virtualPosition)) moves.push(virtualPosition);
+      if (this.isAvailable(virtualPosition)) moves.push(virtualPosition);
       else break;
     }
 
@@ -237,15 +248,19 @@ export class Board {
     return piece;
   };
 
-  public applyMove = (move: Move) => {
+  public applyMove = (move: Move): Play => {
     const [newRow, newCol] = move.to;
-    this.pieces = this.pieces.map((piece: Piece) => {
-      if (isSameBox([piece.row, piece.col], move.from)) {
-        piece.row = newRow;
-        piece.col = newCol;
-      }
-      return piece;
-    });
+
+    const taken = this.getPieceAt(move.to);
+    const piece = this.getPieceAt(move.from) as Piece;
+    piece.row = newRow;
+    piece.col = newCol;
+
+    return {
+      move,
+      piece,
+      taken
+    };
   };
 
   public take = (taken: Position) => {

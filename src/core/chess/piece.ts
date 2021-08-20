@@ -8,6 +8,10 @@ export class Piece {
   public row: number;
   public col: number;
 
+  static copy(piece: Piece) {
+    return new Piece(piece.type, piece.color, piece.row, piece.col);
+  }
+
   constructor(type: PieceType, color: PieceColor, row: number, col: number) {
     this.type = type;
     this.color = color;

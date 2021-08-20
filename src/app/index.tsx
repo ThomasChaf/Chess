@@ -8,7 +8,7 @@ import { Ui2048 } from "./2048/2048";
 import { Menu } from "./menu";
 import { Workout } from "./workout/Workout";
 
-import "./app.css";
+import "./main.css";
 
 export const App = () => {
   const [game, setGame] = useState<Game>(new Game());
@@ -20,7 +20,7 @@ export const App = () => {
 
     nGame.autoplay = false;
     nGame.interval = 1500;
-    nGame.moveForwardTo(50);
+    nGame.moveForwardTo(49.5);
     setGame(nGame);
   }, []); // eslint-disable-line
 
