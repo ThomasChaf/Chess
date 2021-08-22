@@ -10,7 +10,7 @@ export enum PieceType {
   King = "king",
   Queen = "queen",
   Tower = "tower",
-  Knight = "knight",
+  Knight = "cavalier",
   Bishop = "bishop"
 }
 

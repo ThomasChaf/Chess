@@ -25,8 +25,8 @@ export class Game {
 
     if (play.taken) this.board.take(play.taken.position);
 
-    this.board.applyMove(play.move);
-    if (play.rock) this.board.applyMove(play.rock);
+    this.board.basicMove(play.move);
+    if (play.rock) this.board.basicMove(play.rock);
 
     if (play.promotion) this.board.promote(play.move.to, play.promotion.to);
   };

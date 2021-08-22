@@ -1,19 +1,32 @@
-import { Piece, PieceColor, PieceType, Play, Position } from "core/chess";
+import { Piece, PieceColor, Play, Position } from "core/chess";
 import { Board } from "core/chess/board";
 import { opponentColor } from "core/chess/utils";
-import { Situation, Suggestion, SuggestionType } from "./analyst.types";
+import { Situation, SituationAnalyse, Suggestion, SuggestionType } from "./analyst.types";
+import { getKing } from "./utils";
 
 export class Analyst {
-  private isMate(board: Board, color: PieceColor): Piece | null {
-    const opponentKing = board.getPieces({ type: PieceType.King, color })[0];
-    const moves = board.computePossibleDestinations(opponentKing);
+  private i: number = 0;
 
-    return board.isPositionDefended(opponentKing.position, color) && moves.length === 0 ? opponentKing : null;
+  private isMate(board: Board, color: PieceColor): boolean {
+    const king = getKing(board, color);
+    const moves = board.computePossibleDestinations(king);
+
+    return board.isPositionDefended(king.position, color) && moves.length === 0;
   }
 
-  private findDefensivePlay(plays: Situation[]): Situation {
-    const validPlays = plays.filter(({ board }) => {
-      return true;
+  private analyseSituation(situation: Situation): SituationAnalyse {
+    const { board, play } = situation;
+    const color = play.piece.color;
+    const king = getKing(board, color);
+
+    return { kingAttacked: board.isPositionDefended(king.position, color) };
+  }
+
+  private findDefensivePlay(situations: Situation[]): Situation {
+    const validPlays = situations.filter((situation) => {
+      const { kingAttacked } = this.analyseSituation(situation);
+
+      return !kingAttacked;
     });
 
     return validPlays[0];
@@ -22,8 +35,12 @@ export class Analyst {
   private findMateFromSituation(situations: Situation[], color: PieceColor) {
     for (let situation of situations) {
       const { board, play } = situation;
+      this.i += 1;
 
       if (this.isMate(board, opponentColor(color))) {
+        board.display();
+        console.log("HERE IS i:", this.i);
+
         return play;
       }
     }
@@ -31,15 +48,15 @@ export class Analyst {
     return null;
   }
 
-  private computePossibleSituation(board: Board, pieces: Piece[]): Situation[] {
+  private computePossibleSituation(initialBoard: Board, pieces: Piece[]): Situation[] {
     const opponentBoards: Situation[] = [];
 
     for (let piece of pieces) {
-      const moves = board.computePossibleDestinations(piece);
+      const moves = initialBoard.computePossibleDestinations(piece);
       for (let move of moves) {
-        const nextBoard = Board.copy(board);
-        const play = nextBoard.applyMove({ from: piece.position, to: move });
-        opponentBoards.push({ board: nextBoard, play });
+        const board = Board.copy(initialBoard);
+        const play = board.applyMove({ from: piece.position, to: move });
+        opponentBoards.push({ board, play });
       }
     }
 
@@ -84,13 +101,17 @@ export class Analyst {
   }
 
   public find(board: Board, lastPlay?: Play): Suggestion | null {
+    console.time("concatenation");
+
     const color = lastPlay?.piece?.color || PieceColor.White;
-    const king = this.isMate(board, color);
-    if (king) {
-      return { matePiece: king, type: SuggestionType.Mate };
+    if (this.isMate(board, color)) {
+      return { type: SuggestionType.Mate };
     }
 
+    this.i = 0;
+
     const plays = this.findMate(board, color, 2);
+    console.timeEnd("concatenation");
     if (plays) {
       return { plays, type: SuggestionType.Move };
     }

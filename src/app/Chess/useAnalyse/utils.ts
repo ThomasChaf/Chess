@@ -1,3 +1,5 @@
+import { PieceColor, PieceType } from "core/chess";
+import { Board } from "core/chess/board";
 import { Suggestion } from "./analyst.types";
 
 export const displaySuggestion = (suggestion: Suggestion | null): string => {
@@ -11,3 +13,5 @@ export const displaySuggestion = (suggestion: Suggestion | null): string => {
 
   return JSON.stringify(suggestion);
 };
+
+export const getKing = (board: Board, color: PieceColor) => board.getPieces({ type: PieceType.King, color })[0];

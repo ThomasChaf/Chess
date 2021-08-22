@@ -253,6 +253,7 @@ export class Board {
     const piece = this.getPieceAt(move.from) as Piece;
     piece.row = newRow;
     piece.col = newCol;
+    if (taken) this.take(taken.position);
 
     return {
       move,
@@ -261,11 +262,30 @@ export class Board {
     };
   };
 
+  public basicMove = (move: Move) => {
+    const [newCol, newRow] = move.to;
+
+    const piece = this.getPieceAt(move.from) as Piece;
+    piece.row = newRow;
+    piece.col = newCol;
+  };
+
   public take = (taken: Position) => {
-    this.pieces = this.pieces.filter((piece) => !isSameBox([piece.col, piece.row], taken));
+    this.pieces = this.pieces.filter((piece) => !isSameBox(piece.position, taken));
   };
 
   public reset = () => {
     this.pieces = PIECES.map((p) => new Piece(p.type, p.color, p.row, p.col));
+  };
+
+  public display = () => {
+    for (let row = 8; row > 0; row -= 1) {
+      let rowText = "";
+      for (let col = 0; col < 9; col += 1) {
+        const piece = this.getPieceAt([col, row]);
+        rowText += piece ? `[${piece.color === PieceColor.White ? "W" : "B"}${piece.type[0]}]` : "[__]";
+      }
+      console.log(`${row} ${rowText}\n`);
+    }
   };
 }
