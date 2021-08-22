@@ -1,10 +1,9 @@
-import { Piece, PieceColor, PieceType, Play } from "core/chess";
+import { Piece, PieceColor, PieceType, Play, Position } from "core/chess";
 import { Board } from "core/chess/board";
 import { opponentColor } from "core/chess/utils";
 import { Situation, Suggestion, SuggestionType } from "./analyst.types";
 
 export class Analyst {
-  private test: number = 0;
   private isMate(board: Board, color: PieceColor): Piece | null {
     const opponentKing = board.getPieces({ type: PieceType.King, color })[0];
     const moves = board.computePossibleDestinations(opponentKing);
@@ -13,7 +12,11 @@ export class Analyst {
   }
 
   private findDefensivePlay(plays: Situation[]): Situation {
-    return plays[0];
+    const validPlays = plays.filter(({ board }) => {
+      return true;
+    });
+
+    return validPlays[0];
   }
 
   private findMateFromSituation(situations: Situation[], color: PieceColor) {
@@ -43,7 +46,14 @@ export class Analyst {
     return opponentBoards;
   }
 
-  private findOpponentPlay() {}
+  private createOpponentPlays(board: Board, opponentPiece: Piece, opponentMoves: Position[]): Situation[] {
+    return opponentMoves.map((opponentMove) => {
+      const opponentBoard = Board.copy(board);
+      const opponentPlay = opponentBoard.applyMove({ from: opponentPiece.position, to: opponentMove });
+
+      return { board: opponentBoard, play: opponentPlay } as Situation;
+    });
+  }
 
   private findMate(initialBoard: Board, color: PieceColor, deep: number, plays: Play[] = []): Play[] | null {
     const pieces = initialBoard.getPieces({ color });
@@ -51,28 +61,19 @@ export class Analyst {
     const situations = this.computePossibleSituation(initialBoard, pieces);
     const nextMate = this.findMateFromSituation(situations, color);
     if (nextMate) return [...plays, nextMate];
-    this.test = this.test + 1;
 
-    for (let situation of situations) {
-      const { board, play } = situation;
-      for (let i = 0; i < pieces.length; i++) {
-        if (deep > 1) {
-          const opponentPieces = board.getPieces({ color: opponentColor(color) });
-          for (let j = 0; j < opponentPieces.length; j++) {
-            const opponentPiece = opponentPieces[j];
-            const opponentMoves = board.computePossibleDestinations(opponentPiece);
-            if (opponentMoves.length > 0) {
-              const opponentPlays = opponentMoves.map((opponentMove) => {
-                const opponentBoard = Board.copy(board);
-                const opponentPlay = opponentBoard.applyMove({ from: opponentPiece.position, to: opponentMove });
-
-                return { board: opponentBoard, play: opponentPlay } as Situation;
-              });
-              const { board: finalBoard, play: opponentPlay } = this.findDefensivePlay(opponentPlays);
-              const matePlay = this.findMate(finalBoard, color, deep - 1, [...plays, play, opponentPlay]);
-              if (matePlay) {
-                return matePlay;
-              }
+    if (deep > 1) {
+      for (let situation of situations) {
+        const { board, play } = situation;
+        const opponentPieces = board.getPieces({ color: opponentColor(color) });
+        for (let opponentPiece of opponentPieces) {
+          const opponentMoves = board.computePossibleDestinations(opponentPiece);
+          if (opponentMoves.length > 0) {
+            const opponentPlays = this.createOpponentPlays(board, opponentPiece, opponentMoves);
+            const { board: finalBoard, play: opponentPlay } = this.findDefensivePlay(opponentPlays);
+            const matePlay = this.findMate(finalBoard, color, deep - 1, [...plays, play, opponentPlay]);
+            if (matePlay) {
+              return matePlay;
             }
           }
         }
@@ -89,7 +90,6 @@ export class Analyst {
       return { matePiece: king, type: SuggestionType.Mate };
     }
 
-    this.test = 0;
     const plays = this.findMate(board, color, 2);
     if (plays) {
       return { plays, type: SuggestionType.Move };

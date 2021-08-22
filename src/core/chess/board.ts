@@ -47,11 +47,11 @@ export class Board {
   };
 
   public getPieceAt = (position: Position): Piece | undefined => {
-    return this.pieces.find((p) => isSameBox([p.row, p.col], position));
+    return this.pieces.find((p) => isSameBox([p.col, p.row], position));
   };
 
   private isExisting = (position: Position): boolean => {
-    const [row, col] = position;
+    const [col, row] = position;
     return !(row < 1 || row > 8 || col < 0 || col > 8);
   };
 
@@ -78,8 +78,8 @@ export class Board {
     const inc = piece.color === PieceColor.White ? 1 : -1;
     return (
       [
-        [piece.row + inc, piece.col - 1],
-        [piece.row + inc, piece.col + 1]
+        [piece.col - 1, piece.row + inc],
+        [piece.col + 1, piece.row + inc]
       ] as Position[]
     ).filter((position) => this.isExisting(position));
   };
@@ -97,7 +97,7 @@ export class Board {
     const maxInc = (isWhite && piece.row === 2) || (!isWhite && piece.row === 7) ? 2 : 1;
 
     for (let i = 1; i <= maxInc; i++) {
-      const virtualPosition: Position = [piece.row + i * inc, piece.col];
+      const virtualPosition: Position = [piece.col, piece.row + i * inc];
 
       if (this.isAvailable(virtualPosition)) moves.push(virtualPosition);
       else break;
@@ -109,14 +109,14 @@ export class Board {
   private computeKnightDefendedDestinations = (piece: Piece): Position[] =>
     (
       [
-        [piece.row + 2, piece.col + 1],
-        [piece.row + 2, piece.col - 1],
-        [piece.row - 2, piece.col + 1],
-        [piece.row - 2, piece.col - 1],
-        [piece.row - 1, piece.col + 2],
-        [piece.row - 1, piece.col - 2],
-        [piece.row + 1, piece.col + 2],
-        [piece.row + 1, piece.col - 2]
+        [piece.col + 1, piece.row + 2],
+        [piece.col - 1, piece.row + 2],
+        [piece.col + 1, piece.row - 2],
+        [piece.col - 1, piece.row - 2],
+        [piece.col + 2, piece.row - 1],
+        [piece.col - 2, piece.row - 1],
+        [piece.col + 2, piece.row + 1],
+        [piece.col - 2, piece.row + 1]
       ] as Position[]
     ).filter((position) => this.isExisting(position));
 
@@ -129,7 +129,7 @@ export class Board {
     const moves = [];
 
     for (let i = 1; i < 8; i++) {
-      const virtualPosition = [piece.row + i * dirRow, piece.col + i * dirCol] as Position;
+      const virtualPosition = [piece.col + i * dirCol, piece.row + i * dirRow] as Position;
 
       if (this.isAvailable(virtualPosition)) {
         moves.push(virtualPosition);
@@ -174,14 +174,14 @@ export class Board {
   private computeKingDefendedDestinations = (piece: Piece): Position[] => {
     return (
       [
-        [piece.row - 1, piece.col - 1],
-        [piece.row - 1, piece.col],
-        [piece.row, piece.col - 1],
-        [piece.row - 1, piece.col + 1],
-        [piece.row + 1, piece.col - 1],
-        [piece.row + 1, piece.col],
-        [piece.row, piece.col + 1],
-        [piece.row + 1, piece.col + 1]
+        [piece.col - 1, piece.row - 1],
+        [piece.col, piece.row - 1],
+        [piece.col - 1, piece.row],
+        [piece.col + 1, piece.row - 1],
+        [piece.col - 1, piece.row + 1],
+        [piece.col, piece.row + 1],
+        [piece.col + 1, piece.row],
+        [piece.col + 1, piece.row + 1]
       ] as Position[]
     ).filter((virtualPosition: Position) => this.isExisting(virtualPosition));
   };
@@ -239,6 +239,7 @@ export class Board {
     const piece = this.getPieces(filters).find((p) => this.isMoveAllowed(p, to));
 
     if (!piece) {
+      debugger;
       throw new Error("No piece found");
     }
 
@@ -246,7 +247,7 @@ export class Board {
   };
 
   public applyMove = (move: Move): Play => {
-    const [newRow, newCol] = move.to;
+    const [newCol, newRow] = move.to;
 
     const taken = this.getPieceAt(move.to);
     const piece = this.getPieceAt(move.from) as Piece;
@@ -261,7 +262,7 @@ export class Board {
   };
 
   public take = (taken: Position) => {
-    this.pieces = this.pieces.filter((piece) => !isSameBox([piece.row, piece.col], taken));
+    this.pieces = this.pieces.filter((piece) => !isSameBox([piece.col, piece.row], taken));
   };
 
   public reset = () => {

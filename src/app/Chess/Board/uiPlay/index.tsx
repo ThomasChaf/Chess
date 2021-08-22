@@ -15,10 +15,10 @@ export const UiPlay: FC<PieceProps> = ({ play }) => {
   const caseLength = 650 / 8;
   const { move } = play;
   const { from, to } = move;
-  const x1 = caseLength * rowToX(from[1]) + caseLength / 2;
-  const y1 = caseLength * colToY(from[0]) + caseLength / 2;
-  const x2 = caseLength * rowToX(to[1]) + caseLength / 2;
-  const y2 = caseLength * colToY(to[0]) + caseLength / 2;
+  const x1 = caseLength * rowToX(from[0]) + caseLength / 2;
+  const y1 = caseLength * colToY(from[1]) + caseLength / 2;
+  const x2 = caseLength * rowToX(to[0]) + caseLength / 2;
+  const y2 = caseLength * colToY(to[1]) + caseLength / 2;
 
   return (
     <svg className="chess-play">

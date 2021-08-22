@@ -20,7 +20,7 @@ export class Piece {
   }
 
   get position(): Position {
-    return [this.row, this.col] as Position;
+    return [this.col, this.row] as Position;
   }
 
   move(row: number, col: number) {

@@ -7,7 +7,7 @@ class GameFactory {
   private game: Game = new Game();
 
   private pawnPlay = (color: PieceColor, moveBlob: string): Play => {
-    const to = [parseRow(moveBlob[1]), parseCol(moveBlob[0])] as Position;
+    const to = [parseCol(moveBlob[0]), parseRow(moveBlob[1])] as Position;
 
     const piece = this.game.board.findPiece({ type: PieceType.Pawn, color }, to);
 
@@ -18,8 +18,8 @@ class GameFactory {
     const type = parseType(moveBlob[0]);
     const col = withColumn ? parseCol(moveBlob[1]) : 0;
     const to: Position = withColumn
-      ? [parseRow(moveBlob[3]), parseCol(moveBlob[2])]
-      : [parseRow(moveBlob[2]), parseCol(moveBlob[1])];
+      ? [parseCol(moveBlob[2]), parseRow(moveBlob[3])]
+      : [parseCol(moveBlob[1]), parseRow(moveBlob[2])];
 
     const piece = this.game.board.findPiece({ type, col, color }, to);
 
@@ -53,7 +53,7 @@ class GameFactory {
 
   private pawnTake = (color: PieceColor, moveBlob: string): Play => {
     const col = parseCol(moveBlob[0]);
-    const to = [parseRow(moveBlob[3]), parseCol(moveBlob[2])] as Position;
+    const to = [parseCol(moveBlob[2]), parseRow(moveBlob[3])] as Position;
 
     const piece: Piece = this.game.board.findPiece({ type: PieceType.Pawn, color, col }, to);
 
@@ -64,8 +64,8 @@ class GameFactory {
     const type = parseType(moveBlob[0]);
     const col = withColumn ? parseCol(moveBlob[1]) : 0;
     const to: Position = withColumn
-      ? [parseRow(moveBlob[4]), parseCol(moveBlob[3])]
-      : [parseRow(moveBlob[3]), parseCol(moveBlob[2])];
+      ? [parseCol(moveBlob[3]), parseRow(moveBlob[4])]
+      : [parseCol(moveBlob[2]), parseRow(moveBlob[3])];
 
     const piece: Piece = this.game.board.findPiece({ type, color, col }, to);
 
@@ -78,29 +78,29 @@ class GameFactory {
 
     if (color === PieceColor.White && isQueenSideRock) {
       return {
-        move: { from: [1, 5], to: [1, 3] },
-        rock: { from: [1, 1], to: [1, 4] },
+        move: { from: [5, 1], to: [3, 1] },
+        rock: { from: [1, 1], to: [4, 1] },
         piece: king
       };
     }
     if (color === PieceColor.White && !isQueenSideRock) {
       return {
-        move: { from: [1, 5], to: [1, 7] },
-        rock: { from: [1, 8], to: [1, 6] },
+        move: { from: [5, 1], to: [7, 1] },
+        rock: { from: [8, 1], to: [6, 1] },
         piece: king
       };
     }
     if (color === PieceColor.Black && isQueenSideRock) {
       return {
-        move: { from: [8, 5], to: [8, 3] },
-        rock: { from: [8, 1], to: [8, 4] },
+        move: { from: [5, 8], to: [3, 8] },
+        rock: { from: [1, 8], to: [4, 8] },
         piece: king
       };
     }
     if (color === PieceColor.Black && !isQueenSideRock) {
       return {
-        move: { from: [8, 5], to: [8, 7] },
-        rock: { from: [8, 8], to: [8, 6] },
+        move: { from: [5, 8], to: [7, 8] },
+        rock: { from: [8, 8], to: [6, 8] },
         piece: king
       };
     }
