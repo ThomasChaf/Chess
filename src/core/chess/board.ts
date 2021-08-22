@@ -68,26 +68,23 @@ export class Board {
   };
 
   public isPositionDefended = (position: Position, color: PieceColor): boolean => {
-    const defended = _(this.pieces)
+    return _(this.pieces)
       .filter({ color: opponentColor(color) })
-      .map((piece: Piece) => this.computeDefendedDestination(piece));
-
-    const isDefended = defended.some((moves: Position[]) =>
-      _(moves).some((move: Position) => isSameBox(move, position))
-    );
-
-    return isDefended;
+      .map((piece: Piece) => this.computeDefendedDestination(piece))
+      .some((moves: Position[]) => _(moves).some((move: Position) => isSameBox(move, position)));
   };
 
   private computePawnDefendedDestinations = (piece: Piece): Position[] => {
     const inc = piece.color === PieceColor.White ? 1 : -1;
-    return [
-      [piece.row + inc, piece.col - 1],
-      [piece.row + inc, piece.col + 1]
-    ];
+    return (
+      [
+        [piece.row + inc, piece.col - 1],
+        [piece.row + inc, piece.col + 1]
+      ] as Position[]
+    ).filter((position) => this.isExisting(position));
   };
 
-  private computePawnAttackDestination = (piece: Piece): Position[] => {
+  private computePawnAttackableDestination = (piece: Piece): Position[] => {
     return this.computePawnDefendedDestinations(piece).filter((position: Position) =>
       this.isOpponent(piece.color, position)
     );
@@ -96,7 +93,7 @@ export class Board {
   private computePawnDestinations = (piece: Piece): Position[] => {
     const isWhite = piece.color === PieceColor.White;
     const inc = piece.color === PieceColor.White ? 1 : -1;
-    const moves = this.computePawnAttackDestination(piece);
+    const moves = this.computePawnAttackableDestination(piece);
     const maxInc = (isWhite && piece.row === 2) || (!isWhite && piece.row === 7) ? 2 : 1;
 
     for (let i = 1; i <= maxInc; i++) {
@@ -125,7 +122,7 @@ export class Board {
 
   private computeKnightDestinations = (piece: Piece): Position[] =>
     this.computeKnightDefendedDestinations(piece).filter(
-      (position) => this.isAvailable(position) || this.isOpponent(piece.color, position)
+      (position) => !this.getPieceAt(position) || this.isOpponent(piece.color, position)
     );
 
   private computeStraightMoves = (piece: Piece, dirRow: number, dirCol: number) => {

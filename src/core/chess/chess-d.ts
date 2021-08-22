@@ -33,14 +33,3 @@ export type Play = {
   taken?: Piece;
   promotion?: Promotion;
 };
-
-export enum SuggestionType {
-  Mate,
-  Move
-}
-
-export interface Suggestion {
-  play?: Play;
-  matePiece?: Piece;
-  type: SuggestionType;
-}

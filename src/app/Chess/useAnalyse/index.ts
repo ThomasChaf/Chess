@@ -8,11 +8,10 @@ export const useAnalyse = (game: Game) => {
 
   const analyse = () => {
     setLoading(true);
-    console.log(game);
 
     const analyst = new Analyst();
     const result = analyst.find(game.board, game.getPlay());
-    console.log(result);
+    console.log("Mat :", result);
 
     setLoading(false);
   };

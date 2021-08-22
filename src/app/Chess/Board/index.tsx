@@ -15,8 +15,6 @@ export const Board: FC<BoardProps> = ({ nextPlay, pieces }) => {
   const rows = [1, 2, 3, 4, 5, 6, 7, 8];
   const cols = [1, 2, 3, 4, 5, 6, 7, 8];
 
-  console.log(nextPlay);
-
   return (
     <div className="chess-board">
       <div className="chess-board-content">

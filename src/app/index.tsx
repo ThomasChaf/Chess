@@ -20,7 +20,7 @@ export const App = () => {
 
     nGame.autoplay = false;
     nGame.interval = 1500;
-    nGame.moveForwardTo(49.5);
+    nGame.moveForwardTo(48.5);
     setGame(nGame);
   }, []); // eslint-disable-line
 
