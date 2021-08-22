@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Game } from "core/chess";
 
 import { Analyst } from "./analyst";
+import { displaySuggestion } from "./utils";
 
 export const useAnalyse = (game: Game) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -11,7 +12,7 @@ export const useAnalyse = (game: Game) => {
 
     const analyst = new Analyst();
     const result = analyst.find(game.board, game.getPlay());
-    console.log("Mat :", result);
+    console.log(displaySuggestion(result));
 
     setLoading(false);
   };

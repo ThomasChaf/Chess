@@ -43,7 +43,9 @@ export class Analyst {
     return opponentBoards;
   }
 
-  private findMate(initialBoard: Board, color: PieceColor, plays: Play[] = [], deep: number = 0): Play[] | null {
+  private findOpponentPlay() {}
+
+  private findMate(initialBoard: Board, color: PieceColor, deep: number, plays: Play[] = []): Play[] | null {
     const pieces = initialBoard.getPieces({ color });
 
     const situations = this.computePossibleSituation(initialBoard, pieces);
@@ -54,7 +56,7 @@ export class Analyst {
     for (let situation of situations) {
       const { board, play } = situation;
       for (let i = 0; i < pieces.length; i++) {
-        if (deep < 1) {
+        if (deep > 1) {
           const opponentPieces = board.getPieces({ color: opponentColor(color) });
           for (let j = 0; j < opponentPieces.length; j++) {
             const opponentPiece = opponentPieces[j];
@@ -67,7 +69,7 @@ export class Analyst {
                 return { board: opponentBoard, play: opponentPlay } as Situation;
               });
               const { board: finalBoard, play: opponentPlay } = this.findDefensivePlay(opponentPlays);
-              const matePlay = this.findMate(finalBoard, color, [...plays, play, opponentPlay], deep + 1);
+              const matePlay = this.findMate(finalBoard, color, deep - 1, [...plays, play, opponentPlay]);
               if (matePlay) {
                 return matePlay;
               }
@@ -88,7 +90,7 @@ export class Analyst {
     }
 
     this.test = 0;
-    const plays = this.findMate(board, color);
+    const plays = this.findMate(board, color, 2);
     if (plays) {
       return { plays, type: SuggestionType.Move };
     }
