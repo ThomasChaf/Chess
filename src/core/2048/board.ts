@@ -1,4 +1,4 @@
-import { Position } from "core/chess/chess-d";
+import { BoardPosition } from "core/chess/chess-d";
 import { Piece } from "./piece";
 import { VAL } from "./2048-d";
 
@@ -11,8 +11,8 @@ export class Board {
     this.pieces = this.pieces.filter((p) => !p.willDisappear);
   };
 
-  private getEmptyCases(): Position[] {
-    const res: Position[] = [];
+  private getEmptyCases(): BoardPosition[] {
+    const res: BoardPosition[] = [];
 
     VAL.forEach((row) => {
       VAL.forEach((col) => {

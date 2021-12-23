@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import { PIECES } from "./initial-state";
-import { PieceType, PieceColor, Position, Move, Play } from "./chess-d";
+import { PieceType, PieceColor, BoardPosition, Move, Play } from "./chess-d";
 import { isSameBox, opponentColor } from "./utils";
 import { Piece } from "./piece";
 
@@ -29,7 +29,7 @@ export class Board {
     this.pieces.push(piece);
   }
 
-  public promote = (position: Position, promotion: PieceType) => {
+  public promote = (position: BoardPosition, promotion: PieceType) => {
     const piece = this.getPieceAt(position);
     if (piece) piece.type = promotion;
   };
@@ -46,58 +46,58 @@ export class Board {
     );
   };
 
-  public getPieceAt = (position: Position): Piece | undefined => {
+  public getPieceAt = (position: BoardPosition): Piece | undefined => {
     return this.pieces.find((p) => isSameBox([p.col, p.row], position));
   };
 
-  private isExisting = (position: Position): boolean => {
+  private isExisting = (position: BoardPosition): boolean => {
     const [col, row] = position;
     return !(row < 1 || row > 8 || col < 0 || col > 8);
   };
 
-  private isAvailable = (position: Position): boolean => {
+  private isAvailable = (position: BoardPosition): boolean => {
     return this.isExisting(position) && !this.getPieceAt(position);
   };
 
-  private isAlly = (color: PieceColor, position: Position): boolean => {
+  private isAlly = (color: PieceColor, position: BoardPosition): boolean => {
     return this.getPieceAt(position)?.color === color;
   };
 
-  private isOpponent = (color: PieceColor, position: Position): boolean => {
+  private isOpponent = (color: PieceColor, position: BoardPosition): boolean => {
     return this.getPieceAt(position)?.color === opponentColor(color);
   };
 
-  public isPositionDefended = (position: Position, color: PieceColor): boolean => {
+  public isPositionDefended = (position: BoardPosition, color: PieceColor): boolean => {
     return _(this.pieces)
       .filter({ color: opponentColor(color) })
       .map((piece: Piece) => this.computeDefendedDestination(piece))
-      .some((moves: Position[]) => _(moves).some((move: Position) => isSameBox(move, position)));
+      .some((moves: BoardPosition[]) => _(moves).some((move: BoardPosition) => isSameBox(move, position)));
   };
 
-  private computePawnDefendedDestinations = (piece: Piece): Position[] => {
+  private computePawnDefendedDestinations = (piece: Piece): BoardPosition[] => {
     const inc = piece.color === PieceColor.White ? 1 : -1;
     return (
       [
         [piece.col - 1, piece.row + inc],
         [piece.col + 1, piece.row + inc]
-      ] as Position[]
+      ] as BoardPosition[]
     ).filter((position) => this.isExisting(position));
   };
 
-  private computePawnAttackableDestination = (piece: Piece): Position[] => {
-    return this.computePawnDefendedDestinations(piece).filter((position: Position) =>
+  private computePawnAttackableDestination = (piece: Piece): BoardPosition[] => {
+    return this.computePawnDefendedDestinations(piece).filter((position: BoardPosition) =>
       this.isOpponent(piece.color, position)
     );
   };
 
-  private computePawnDestinations = (piece: Piece): Position[] => {
+  private computePawnDestinations = (piece: Piece): BoardPosition[] => {
     const isWhite = piece.color === PieceColor.White;
     const inc = piece.color === PieceColor.White ? 1 : -1;
     const moves = this.computePawnAttackableDestination(piece);
     const maxInc = (isWhite && piece.row === 2) || (!isWhite && piece.row === 7) ? 2 : 1;
 
     for (let i = 1; i <= maxInc; i++) {
-      const virtualPosition: Position = [piece.col, piece.row + i * inc];
+      const virtualPosition: BoardPosition = [piece.col, piece.row + i * inc];
 
       if (this.isAvailable(virtualPosition)) moves.push(virtualPosition);
       else break;
@@ -106,7 +106,7 @@ export class Board {
     return moves;
   };
 
-  private computeKnightDefendedDestinations = (piece: Piece): Position[] =>
+  private computeKnightDefendedDestinations = (piece: Piece): BoardPosition[] =>
     (
       [
         [piece.col + 1, piece.row + 2],
@@ -117,10 +117,10 @@ export class Board {
         [piece.col - 2, piece.row - 1],
         [piece.col + 2, piece.row + 1],
         [piece.col - 2, piece.row + 1]
-      ] as Position[]
+      ] as BoardPosition[]
     ).filter((position) => this.isExisting(position));
 
-  private computeKnightDestinations = (piece: Piece): Position[] =>
+  private computeKnightDestinations = (piece: Piece): BoardPosition[] =>
     this.computeKnightDefendedDestinations(piece).filter(
       (position) => !this.getPieceAt(position) || this.isOpponent(piece.color, position)
     );
@@ -129,7 +129,7 @@ export class Board {
     const moves = [];
 
     for (let i = 1; i < 8; i++) {
-      const virtualPosition = [piece.col + i * dirCol, piece.row + i * dirRow] as Position;
+      const virtualPosition = [piece.col + i * dirCol, piece.row + i * dirRow] as BoardPosition;
 
       if (this.isAvailable(virtualPosition)) {
         moves.push(virtualPosition);
@@ -142,14 +142,14 @@ export class Board {
     return moves;
   };
 
-  private computeBishopDestinations = (piece: Piece): Position[] => [
+  private computeBishopDestinations = (piece: Piece): BoardPosition[] => [
     ...this.computeStraightMoves(piece, -1, -1),
     ...this.computeStraightMoves(piece, -1, 1),
     ...this.computeStraightMoves(piece, 1, -1),
     ...this.computeStraightMoves(piece, 1, 1)
   ];
 
-  private computeQueenDestinations = (piece: Piece): Position[] => {
+  private computeQueenDestinations = (piece: Piece): BoardPosition[] => {
     return [
       ...this.computeStraightMoves(piece, -1, -1),
       ...this.computeStraightMoves(piece, -1, 0),
@@ -162,7 +162,7 @@ export class Board {
     ];
   };
 
-  private computeTowerDestinations = (piece: Piece): Position[] => {
+  private computeTowerDestinations = (piece: Piece): BoardPosition[] => {
     return [
       ...this.computeStraightMoves(piece, -1, 0),
       ...this.computeStraightMoves(piece, 1, 0),
@@ -171,7 +171,7 @@ export class Board {
     ];
   };
 
-  private computeKingDefendedDestinations = (piece: Piece): Position[] => {
+  private computeKingDefendedDestinations = (piece: Piece): BoardPosition[] => {
     return (
       [
         [piece.col - 1, piece.row - 1],
@@ -182,18 +182,18 @@ export class Board {
         [piece.col, piece.row + 1],
         [piece.col + 1, piece.row],
         [piece.col + 1, piece.row + 1]
-      ] as Position[]
-    ).filter((virtualPosition: Position) => this.isExisting(virtualPosition));
+      ] as BoardPosition[]
+    ).filter((virtualPosition: BoardPosition) => this.isExisting(virtualPosition));
   };
 
-  private computeKingDestinations = (piece: Piece): Position[] => {
-    return this.computeKingDefendedDestinations(piece).filter(
-      (virtualPosition: Position) =>
-        !this.isAlly(piece.color, virtualPosition) && !this.isPositionDefended(virtualPosition, piece.color)
-    );
+  private computeKingDestinations = (king: Piece): BoardPosition[] => {
+    return this.computeKingDefendedDestinations(king).filter((virtualPosition: BoardPosition) => {
+      const positionDefended = this.isPositionDefended(virtualPosition, king.color);
+      return !this.isAlly(king.color, virtualPosition) && !positionDefended;
+    });
   };
 
-  public computePossibleDestinations = (piece: Piece): Position[] => {
+  public computePossibleDestinations = (piece: Piece): BoardPosition[] => {
     switch (piece.type) {
       case PieceType.Pawn:
         return this.computePawnDestinations(piece);
@@ -212,7 +212,7 @@ export class Board {
     }
   };
 
-  public computeDefendedDestination(piece: Piece): Position[] {
+  public computeDefendedDestination(piece: Piece): BoardPosition[] {
     switch (piece.type) {
       case PieceType.Pawn:
         return this.computePawnDefendedDestinations(piece);
@@ -231,29 +231,14 @@ export class Board {
     }
   }
 
-  private isMoveAllowed = (piece: Piece, to: Position): boolean => {
-    return _(this.computePossibleDestinations(piece)).some((d: Position) => isSameBox(d, to));
-  };
-
-  public findPiece = (filters: PieceFilters, to: Position): Piece => {
-    const piece = this.getPieces(filters).find((p) => this.isMoveAllowed(p, to));
-
-    if (!piece) {
-      debugger;
-      throw new Error("No piece found");
-    }
-
-    return piece;
-  };
-
   public applyMove = (move: Move): Play => {
     const [newCol, newRow] = move.to;
 
     const taken = this.getPieceAt(move.to);
     const piece = this.getPieceAt(move.from) as Piece;
+    if (taken) this.take(taken.position);
     piece.row = newRow;
     piece.col = newCol;
-    if (taken) this.take(taken.position);
 
     return {
       move,
@@ -270,7 +255,7 @@ export class Board {
     piece.col = newCol;
   };
 
-  public take = (taken: Position) => {
+  public take = (taken: BoardPosition) => {
     this.pieces = this.pieces.filter((piece) => !isSameBox(piece.position, taken));
   };
 

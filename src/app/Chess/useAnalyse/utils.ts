@@ -1,17 +1,14 @@
-import { PieceColor, PieceType } from "core/chess";
+import { PieceColor, PieceType, Play } from "core/chess";
 import { Board } from "core/chess/board";
-import { Suggestion } from "./analyst.types";
 
-export const displaySuggestion = (suggestion: Suggestion | null): string => {
-  if (!suggestion) return "null";
+export const displayPlay = ({ move, piece }: Play): string => {
+  return `${JSON.stringify(move)} ${piece.type} ${piece.color}`;
+};
 
-  const { plays } = suggestion;
+export const displaySuggestion = (plays: Play[] | null): string => {
+  if (!plays) return "null";
 
-  if (plays) {
-    return `${plays.map(({ move, piece }) => `${JSON.stringify(move)} ${piece.type} ${piece.color}`).join("\n")}`;
-  }
-
-  return JSON.stringify(suggestion);
+  return `${plays.map(displayPlay).join("\n")}`;
 };
 
 export const getKing = (board: Board, color: PieceColor) => board.getPieces({ type: PieceType.King, color })[0];

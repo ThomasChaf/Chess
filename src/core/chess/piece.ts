@@ -1,5 +1,5 @@
 import { generate } from "shortid";
-import { PieceColor, PieceType, Position } from "./chess-d";
+import { PieceColor, PieceType, BoardPosition } from "./chess-d";
 
 export class Piece {
   public id: string = generate();
@@ -19,8 +19,8 @@ export class Piece {
     this.col = col;
   }
 
-  get position(): Position {
-    return [this.col, this.row] as Position;
+  get position(): BoardPosition {
+    return [this.col, this.row] as BoardPosition;
   }
 
   move(row: number, col: number) {

@@ -16,6 +16,10 @@ export class Game {
     return this.history[this.step];
   };
 
+  public getLastPlay = (): Play | undefined => {
+    return this.history[this.step - 1];
+  };
+
   public onGoing = (): boolean => {
     return this.timer !== null;
   };

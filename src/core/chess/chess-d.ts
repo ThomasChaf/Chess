@@ -14,11 +14,11 @@ export enum PieceType {
   Bishop = "bishop"
 }
 
-export type Position = [number, number];
+export type BoardPosition = [number, number];
 
 export type Move = {
-  from: Position;
-  to: Position;
+  from: BoardPosition;
+  to: BoardPosition;
 };
 
 export type Promotion = {

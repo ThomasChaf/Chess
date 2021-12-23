@@ -1,9 +1,9 @@
-import { Position } from "core/chess/chess-d";
+import { BoardPosition } from "core/chess/chess-d";
 import { Move, VAL } from "./2048-d";
 import { Piece } from "./piece";
 import { Board } from "./board";
 
-type PlayArgs = [Position[], number, number];
+type PlayArgs = [BoardPosition[], number, number];
 
 export class Game {
   board: Board = new Board();
@@ -24,17 +24,17 @@ export class Game {
     return nextPiece;
   };
 
-  private findPrevSpace = (piece: Piece, incR: number, incC: number, prev: number = 1): Position | undefined => {
+  private findPrevSpace = (piece: Piece, incR: number, incC: number, prev: number = 1): BoardPosition | undefined => {
     const lookAtRow = piece.row - incR * prev;
     const lookAtCol = piece.col - incC * prev;
     if (lookAtRow < 0 || lookAtRow > 3 || lookAtCol < 0 || lookAtCol > 3) return;
 
     if (!this.board.getAt(lookAtRow, lookAtCol)) {
-      return this.findPrevSpace(piece, incR, incC, prev + 1) || ([lookAtRow, lookAtCol] as Position);
+      return this.findPrevSpace(piece, incR, incC, prev + 1) || ([lookAtRow, lookAtCol] as BoardPosition);
     }
   };
 
-  private computePlay = (from: Position[], incR: number, incC: number) => {
+  private computePlay = (from: BoardPosition[], incR: number, incC: number) => {
     let hasPlay = false;
     from.forEach(([row, col]) => {
       VAL.forEach((deep) => {

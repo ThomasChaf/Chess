@@ -11,8 +11,12 @@ export const useAnalyse = (game: Game) => {
     setLoading(true);
 
     const analyst = new Analyst();
-    const result = analyst.find(game.board, game.getPlay());
-    console.log(displaySuggestion(result));
+    const lastPlay = game.getLastPlay();
+    if (lastPlay) {
+      const result = analyst.find(game.board, lastPlay);
+      console.log("============= FINAL RESULT: =============");
+      console.log(displaySuggestion(result));
+    }
 
     setLoading(false);
   };

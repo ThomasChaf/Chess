@@ -1,15 +1,31 @@
-import { PieceColor, PieceType, Position, Play, Promotion } from "./chess-d";
+import _ from "lodash";
+
+import { PieceColor, PieceType, BoardPosition, Play, Promotion } from "./chess-d";
 import { parseCol, parseRow, parseType, isSameBox, isPawn } from "./utils";
 import { Piece } from "./piece";
 import { Game } from "./game";
+import { PieceFilters } from "./board";
 
 class GameFactory {
   private game: Game = new Game();
 
-  private pawnPlay = (color: PieceColor, moveBlob: string): Play => {
-    const to = [parseCol(moveBlob[0]), parseRow(moveBlob[1])] as Position;
+  private findPiece = (filters: PieceFilters, to: BoardPosition): Piece => {
+    const piece = this.game.board.getPieces(filters).find((piece) => {
+      return _(this.game.board.computePossibleDestinations(piece)).some((d: BoardPosition) => isSameBox(d, to));
+    });
 
-    const piece = this.game.board.findPiece({ type: PieceType.Pawn, color }, to);
+    if (!piece) {
+      debugger;
+      throw new Error("No piece found");
+    }
+
+    return piece;
+  };
+
+  private pawnPlay = (color: PieceColor, moveBlob: string): Play => {
+    const to = [parseCol(moveBlob[0]), parseRow(moveBlob[1])] as BoardPosition;
+
+    const piece = this.findPiece({ type: PieceType.Pawn, color }, to);
 
     return { move: { from: piece.position, to }, piece };
   };
@@ -17,18 +33,18 @@ class GameFactory {
   private piecePlay = (color: PieceColor, moveBlob: string, withColumn: boolean = false): Play => {
     const type = parseType(moveBlob[0]);
     const col = withColumn ? parseCol(moveBlob[1]) : 0;
-    const to: Position = withColumn
+    const to: BoardPosition = withColumn
       ? [parseCol(moveBlob[2]), parseRow(moveBlob[3])]
       : [parseCol(moveBlob[1]), parseRow(moveBlob[2])];
 
-    const piece = this.game.board.findPiece({ type, col, color }, to);
+    const piece = this.findPiece({ type, col, color }, to);
 
     return { move: { from: piece.position, to }, piece };
   };
 
   private checkEnPassant = (color: PieceColor, moveBlob: string): Play | null => {
     const col = parseCol(moveBlob[0]);
-    const to = [parseRow(moveBlob[3]), parseCol(moveBlob[2])] as Position;
+    const to = [parseRow(moveBlob[3]), parseCol(moveBlob[2])] as BoardPosition;
     const lastPlay = this.game.history[this.game.history.length - 1];
     if (!lastPlay) return null;
     const lastMove = lastPlay.move;
@@ -38,7 +54,7 @@ class GameFactory {
 
     if (lastMove.to[0] - lastMove.from[0] !== 2) return null;
 
-    const enPassantPosition = [lastMove.to[0] - (color === PieceColor.White ? -1 : 1), lastMove.to[1]] as Position;
+    const enPassantPosition = [lastMove.to[0] - (color === PieceColor.White ? -1 : 1), lastMove.to[1]] as BoardPosition;
 
     if (isSameBox(to, enPassantPosition)) {
       return {
@@ -53,9 +69,9 @@ class GameFactory {
 
   private pawnTake = (color: PieceColor, moveBlob: string): Play => {
     const col = parseCol(moveBlob[0]);
-    const to = [parseCol(moveBlob[2]), parseRow(moveBlob[3])] as Position;
+    const to = [parseCol(moveBlob[2]), parseRow(moveBlob[3])] as BoardPosition;
 
-    const piece: Piece = this.game.board.findPiece({ type: PieceType.Pawn, color, col }, to);
+    const piece: Piece = this.findPiece({ type: PieceType.Pawn, color, col }, to);
 
     return { move: { from: piece.position, to }, piece };
   };
@@ -63,11 +79,11 @@ class GameFactory {
   private pieceTake = (color: PieceColor, moveBlob: string, withColumn: boolean = false): Play => {
     const type = parseType(moveBlob[0]);
     const col = withColumn ? parseCol(moveBlob[1]) : 0;
-    const to: Position = withColumn
+    const to: BoardPosition = withColumn
       ? [parseCol(moveBlob[3]), parseRow(moveBlob[4])]
       : [parseCol(moveBlob[2]), parseRow(moveBlob[3])];
 
-    const piece: Piece = this.game.board.findPiece({ type, color, col }, to);
+    const piece: Piece = this.findPiece({ type, color, col }, to);
 
     return { move: { from: piece.position, to }, piece };
   };
