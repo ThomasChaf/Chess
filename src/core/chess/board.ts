@@ -9,7 +9,6 @@ export interface PieceFilters {
   row?: number;
   col?: number;
   type?: PieceType;
-  color?: PieceColor;
 }
 
 export class Board {
@@ -34,14 +33,14 @@ export class Board {
     if (piece) piece.type = promotion;
   };
 
-  public getPieces = (filters?: PieceFilters): Piece[] => {
+  public getPieces = (color?: PieceColor, filters?: PieceFilters): Piece[] => {
     if (!filters) return this.pieces;
 
     return this.pieces.filter(
       (p: Piece) =>
+        (!color || color === p.color) &&
         (!filters.row || filters.row === p.row) &&
         (!filters.col || filters.col === p.col) &&
-        (!filters.color || filters.color === p.color) &&
         (!filters.type || filters.type === p.type)
     );
   };
@@ -52,7 +51,7 @@ export class Board {
 
   private isExisting = (position: BoardPosition): boolean => {
     const [col, row] = position;
-    return !(row < 1 || row > 8 || col < 0 || col > 8);
+    return !(row < 1 || row > 8 || col < 1 || col > 8);
   };
 
   private isAvailable = (position: BoardPosition): boolean => {
@@ -266,7 +265,7 @@ export class Board {
   public display = () => {
     for (let row = 8; row > 0; row -= 1) {
       let rowText = "";
-      for (let col = 0; col < 9; col += 1) {
+      for (let col = 1; col < 9; col += 1) {
         const piece = this.getPieceAt([col, row]);
         rowText += piece ? `[${piece.color === PieceColor.White ? "W" : "B"}${piece.type[0]}]` : "[__]";
       }

@@ -1,5 +1,5 @@
 export interface Analyse {
   checkMate: boolean;
-  kingAttacked: boolean;
+  forcedMate: boolean;
   opponentKingAttacked: boolean;
 }

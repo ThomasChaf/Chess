@@ -1,19 +1,34 @@
-import { PieceColor, PieceType, Play } from "core/chess";
+import { PieceColor, Play } from "core/chess";
 import { Board } from "core/chess/board";
-import { comparePlay, opponentColor } from "core/chess/utils";
+import { opponentColor } from "core/chess/utils";
 import { Move } from "./position";
-import { displayPlay } from "./utils";
 
 export class Analyst {
-  static computeMoves(initialBoard: Board, color: PieceColor, depth: number): Move[] {
-    if (depth === 0) return [];
+  moves: Move[] | null = null;
 
-    const moves: Move[] = [];
-    const pieces = initialBoard.getPieces({ color });
+  findBestMove(): Move | undefined {
+    if (!this.moves) return;
+    return this.moves.filter((move: Move) => move.analyse?.checkMate)[0];
+  }
 
-    if (depth === 2) {
-      console.log(pieces);
+  computeMoves(initialBoard: Board, color: PieceColor, depth: number, moves: Move[] | null): Move[] | null {
+    if (depth === 0) return null;
+
+    if (moves) {
+      for (let move of moves) {
+        const { board } = move;
+        const opp = this.computeMoves(board, opponentColor(color), depth - 1, move.opponentMoves);
+        if (!move.opponentMoves) {
+          move.opponentMoves = opp;
+        }
+        move.computePostAnalyse(color);
+        if (move.analyse?.checkMate) return null;
+      }
+      return null;
     }
+
+    let newMoves: Move[] = [];
+    const pieces = initialBoard.getPieces(color);
 
     for (let piece of pieces) {
       const destinations = initialBoard.computePossibleDestinations(piece);
@@ -21,54 +36,48 @@ export class Analyst {
         const board = Board.copy(initialBoard);
         const play = board.applyMove({ from: piece.position, to: destination });
         const move = new Move(board, play);
-        if (
-          depth === 2 &&
-          comparePlay(play, {
-            move: { from: [5, 6], to: [7, 6] },
-            piece: {
-              id: "3",
-              type: PieceType.Queen,
-              color: PieceColor.White,
-              row: 6,
-              col: 7
-            }
-          } as Play)
-        ) {
-          debugger;
-          console.log(play);
-          board.display();
-          console.log(move.opponentMoves);
+        const forbidden = move.computePreAnalyse(color);
+        if (forbidden) continue;
 
-          move.opponentMoves = Analyst.computeMoves(board, opponentColor(color), depth - 1).filter((opponentMove) => {
-            return opponentMove.analyse && !opponentMove.analyse.kingAttacked;
-          });
-          move.opponentMoves.forEach((x) => {
-            console.log(displayPlay(x.lastPlay));
-          });
-        } else {
-          move.opponentMoves = Analyst.computeMoves(board, opponentColor(color), depth - 1);
-        }
+        move.opponentMoves = this.computeMoves(board, opponentColor(color), depth - 1, null);
 
-        move.computeAnalyse(color);
-        moves.push(move);
+        move.computePostAnalyse(color);
+        newMoves.push(move);
       }
     }
 
-    return moves;
-  }
-
-  public find(board: Board, lastPlay: Play): Play[] | null {
-    console.time("concatenation");
-    const color = opponentColor(lastPlay.piece.color) || PieceColor.White;
-
-    console.log(lastPlay, color);
-
-    const myMoves = Analyst.computeMoves(board, color, 2);
-    console.log(myMoves);
-    for (let move of myMoves) {
-      if (move.analyse?.checkMate) return [move.lastPlay];
+    newMoves.sort((m1, m2) => m1.compare(m2));
+    if (newMoves[0]?.analyse?.checkMate) {
+      newMoves = [newMoves[0]];
     }
 
-    return null;
+    if (newMoves.length === 1 && depth === 1) {
+      const forcedMove = newMoves[0];
+      forcedMove.opponentMoves = this.computeMoves(forcedMove.board, opponentColor(color), depth + 1, null);
+      forcedMove.computePostAnalyse(color);
+    }
+
+    return newMoves;
+  }
+
+  static find(board: Board, lastPlay: Play): Move | undefined {
+    const color = opponentColor(lastPlay.piece.color) || PieceColor.White;
+
+    const analyst = new Analyst();
+
+    let depth = 1;
+    while (depth < 5) {
+      const moves = analyst.computeMoves(board, color, depth, analyst.moves);
+      if (!analyst.moves) {
+        analyst.moves = moves;
+      }
+
+      const checkMove = analyst.findBestMove();
+      if (checkMove) return checkMove;
+
+      depth++;
+    }
+
+    return undefined;
   }
 }
