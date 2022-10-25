@@ -1,7 +1,7 @@
 import { PieceColor, Play } from "core/chess";
 import { Board } from "core/chess/board";
 import { opponentColor } from "core/chess/utils";
-import { Move } from "./position";
+import { Move } from "./move";
 
 export class Analyst {
   moves: Move[] | null = null;

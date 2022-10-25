@@ -11,23 +11,18 @@ export interface AnimatedLayoutRef {
 }
 
 interface AnimatedLayoutProps {
-  onOpen?: () => void;
-  onClose?: () => void;
   children: React.ReactNode;
 }
 
 export const AnimatedLayout = forwardRef((props: AnimatedLayoutProps, ref) => {
   const [isOpen, setOpen] = useState(false);
 
-  const open = () => {
-    setOpen(true);
-    setTimeout(() => props.onOpen && props.onOpen(), 1000);
-  };
+  const open = () => setOpen(true);
+
   const close = () => {
     if (!open) return;
 
     setOpen(false);
-    setTimeout(() => props.onClose && props.onClose(), 1000);
   };
 
   useKeypress({ Escape: close });

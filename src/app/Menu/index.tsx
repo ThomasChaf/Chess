@@ -1,44 +1,20 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { useHistory } from "react-router-dom";
 
-import { Game } from "core/chess";
-
+import { XButton } from "common/button";
 import { AnimatedLayout, AnimatedLayoutRef } from "common/animatedLayout";
-
-import { NavigationPanel } from "./panel";
-import { ChessPanel } from "./chessPanel";
 
 import "./menu.scss";
 
-export enum Views {
-  Initial,
-  LoadGame
-}
-
-interface MenuProps {
-  start: (game: Game) => void;
-}
-
-export const Menu = ({ start }: MenuProps) => {
+export const Menu = () => {
   const layoutRef = useRef<AnimatedLayoutRef>(null);
-  const [vue, switchVue] = useState(Views.Initial);
   const history = useHistory();
-
-  const handleStart = (game: Game, interval: number, step: number, autoplay: boolean) => {
-    redirect("/chess");
-    game.autoplay = autoplay;
-    game.interval = interval;
-    game.moveForwardTo(step);
-    layoutRef.current?.close();
-    start(game);
-  };
 
   const redirect = (path: string) => {
     layoutRef.current?.close();
     history.push(path);
   };
 
-  const onClose = () => switchVue(Views.Initial);
   const openMenu = () => layoutRef.current?.open();
 
   return (
@@ -47,12 +23,22 @@ export const Menu = ({ start }: MenuProps) => {
         menu
       </span>
 
-      <AnimatedLayout ref={layoutRef} onClose={onClose}>
+      <AnimatedLayout ref={layoutRef}>
         <div className="menu-box">
           <p className="menu-headline">Menu</p>
-          {vue === Views.Initial && <NavigationPanel switchVue={switchVue} redirect={redirect} />}
-
-          {vue === Views.LoadGame && <ChessPanel start={handleStart} />}
+          <div className="menu-content">
+            <XButton onClick={() => redirect("/workout")} next>
+              Workout
+            </XButton>
+            <br />
+            <XButton onClick={() => redirect("/chess")} next>
+              Chess
+            </XButton>
+            <br />
+            <XButton onClick={() => redirect("/2048")} next>
+              2048
+            </XButton>
+          </div>
         </div>
       </AnimatedLayout>
     </>

@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { Move } from "app/chess/useAnalyse/position";
+import { Move } from "app/chess/view/useAnalyse/move";
 
 import { PieceColor, PieceType, BoardPosition, Play, Promotion } from "./chess-d";
 import { parseCol, parseRow, parseType, isSameBox, isPawn } from "./utils";
