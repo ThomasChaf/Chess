@@ -1,8 +1,8 @@
-import React, { FC } from "react";
+import React from "react";
 
 import { ControlsProps } from "./controls.d";
 
-export const Controls: FC<ControlsProps> = ({ actions, analyse, onGoing }) => {
+export const Controls = ({ actions, analyse, onGoing }: ControlsProps) => {
   const { moveBackWard, pausePlay, moveForward } = actions;
 
   return (

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 
 import { Play } from "core/chess";
 
@@ -11,7 +11,7 @@ interface PieceProps {
   play: Play;
 }
 
-export const UiPlay: FC<PieceProps> = ({ play }) => {
+export const UiPlay = ({ play }: PieceProps) => {
   const caseLength = 650 / 8;
   const { move } = play;
   const { from, to } = move;

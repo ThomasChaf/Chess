@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import { Piece, Play } from "core/chess";
 
 import { UiPiece } from "./uiPiece";
@@ -11,7 +11,7 @@ interface BoardProps {
   pieces: Piece[];
 }
 
-export const Board: FC<BoardProps> = ({ nextPlay, pieces }) => {
+export const Board = ({ nextPlay, pieces }: BoardProps) => {
   const rows = [1, 2, 3, 4, 5, 6, 7, 8];
   const cols = [1, 2, 3, 4, 5, 6, 7, 8];
 

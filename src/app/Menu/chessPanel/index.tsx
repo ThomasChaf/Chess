@@ -1,4 +1,4 @@
-import React, { FC, useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import { useHistory } from "react-router-dom";
 
 import { parse, Game } from "core/chess";
@@ -9,7 +9,7 @@ import { XLabel, XInput } from "common/elements";
 
 import { LoadGameStateProps } from "./chessPanel.d";
 
-export const ChessPanel: FC<LoadGameStateProps> = ({ start }) => {
+export const ChessPanel = ({ start }: LoadGameStateProps) => {
   const [defaultGame] = useState<Game>(new Game());
   const [game, setGame] = useState<Game>(defaultGame);
   const [time, setTime] = useState(1500);

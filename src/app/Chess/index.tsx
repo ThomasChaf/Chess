@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 
 import { Board } from "./board";
 import { Controls } from "./controls";
@@ -8,7 +8,7 @@ import { useAnalyse } from "./useAnalyse";
 
 import "./game.scss";
 
-export const Chess: FC<ChessProps> = ({ game }) => {
+export const Chess = ({ game }: ChessProps) => {
   const actions = useActions(game);
   const { analyse, loading } = useAnalyse(game);
 

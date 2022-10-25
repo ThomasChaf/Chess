@@ -1,4 +1,4 @@
-import React, { useState, useRef, FC } from "react";
+import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 
 import { Game } from "core/chess";
@@ -19,7 +19,7 @@ interface MenuProps {
   start: (game: Game) => void;
 }
 
-export const Menu: FC<MenuProps> = ({ start }) => {
+export const Menu = ({ start }: MenuProps) => {
   const layoutRef = useRef<AnimatedLayoutRef>(null);
   const [vue, switchVue] = useState(Views.Initial);
   const history = useHistory();
