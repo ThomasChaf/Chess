@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { PieceColor, Play } from "core/chess";
 import { Board } from "core/chess/board";
 import { opponentColor } from "core/chess/utils";
@@ -6,13 +7,17 @@ import { displayPlay, getKing } from "./utils";
 
 export class Move {
   analyse: Analyse | undefined;
-  opponentMoves: Move[] | null = null;
+  opponentMoves: Move[] = [];
   board: Board;
   lastPlay: Play;
+  id: string;
+  deep: number;
 
-  constructor(board: Board, lastPlay: Play) {
+  constructor(board: Board, lastPlay: Play, deep: number = 1) {
     this.board = board;
+    this.id = _.uniqueId();
     this.lastPlay = lastPlay;
+    this.deep = deep;
   }
 
   // if move is better than current return 1 otherwise -1
@@ -21,7 +26,7 @@ export class Move {
 
     if (move.analyse?.opponentKingAttacked && !this.analyse?.opponentKingAttacked) return 1;
     if (!move.analyse?.opponentKingAttacked && this.analyse?.opponentKingAttacked) return -1;
-    return (this.opponentMoves || []).length - (move.opponentMoves || []).length;
+    return this.opponentMoves.length - move.opponentMoves.length;
   }
 
   public computePreAnalyse(color: PieceColor): boolean {
@@ -42,19 +47,16 @@ export class Move {
       forcedMate: false,
       opponentKingAttacked
     };
-    if (this.opponentMoves) {
-      this.analyse.checkMate = opponentKingAttacked && this.opponentMoves.every((move) => move.analyse?.forcedMate);
-      this.analyse.forcedMate = this.opponentMoves.some((move) => move.analyse?.checkMate);
-    }
+    this.analyse.checkMate = opponentKingAttacked && this.opponentMoves.every((move) => move.analyse?.forcedMate);
+    this.analyse.forcedMate = this.opponentMoves.some((move) => move.analyse?.checkMate);
   }
 
   public display() {
     console.log("DISPLAY MOVE: ============", this.analyse);
     this.board.display();
     displayPlay(this.lastPlay, "MY");
-    this.opponentMoves &&
-      this.opponentMoves.forEach((x) => {
-        displayPlay(x.lastPlay, "O:");
-      });
+    this.opponentMoves.forEach((x) => {
+      displayPlay(x.lastPlay, "O:");
+    });
   }
 }

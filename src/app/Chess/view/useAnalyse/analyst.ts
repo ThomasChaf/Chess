@@ -1,94 +1,80 @@
 import { PieceColor, Play } from "core/chess";
 import { Board } from "core/chess/board";
 import { opponentColor } from "core/chess/utils";
+import _ from "lodash";
 import { Move } from "./move";
 
-export class Analyst {
-  findBestMove(moves: Move[]): Move | undefined {
-    if (!moves) return;
-    return moves.filter((move: Move) => move.analyse?.checkMate)[0];
-  }
+const computeMoves = (initialBoard: Board, color: PieceColor, deep: number): Move[] => {
+  const newMoves: Move[] = [];
+  const pieces = initialBoard.getPieces({ color });
 
-  // if (moves) {
-  //   for (let move of moves) {
-  //     const { board } = move;
-  //     const opp = this.computeMoves(board, opponentColor(color), depth - 1, move.opponentMoves);
-  //     if (!move.opponentMoves) {
-  //       move.opponentMoves = opp;
-  //     }
-  //     move.computePostAnalyse(color);
-  //     if (move.analyse?.checkMate) return null;
-  //   }
-  //   return null;
-  // }
+  for (let piece of pieces) {
+    const destinations = initialBoard.computePossibleDestinations(piece);
+    for (let destination of destinations) {
+      const board = Board.copy(initialBoard);
+      const play = board.applyMove({ from: piece.position, to: destination });
+      const move = new Move(board, play, deep);
+      const forbidden = move.computePreAnalyse(color);
+      if (forbidden) continue;
 
-  computeMoves(initialBoard: Board, color: PieceColor): Move[] {
-    const newMoves: Move[] = [];
-    const pieces = initialBoard.getPieces({ color });
-
-    for (let piece of pieces) {
-      const destinations = initialBoard.computePossibleDestinations(piece);
-      for (let destination of destinations) {
-        const board = Board.copy(initialBoard);
-        const play = board.applyMove({ from: piece.position, to: destination });
-        const move = new Move(board, play);
-        const forbidden = move.computePreAnalyse(color);
-        if (forbidden) continue;
-
-        newMoves.push(move);
-      }
+      newMoves.push(move);
     }
-
-    return newMoves;
   }
 
-  computeMyMoves(initialBoard: Board, color: PieceColor): Move[] {
-    const moves = this.computeMoves(initialBoard, color);
+  return newMoves;
+};
 
-    for (let move of moves) {
-      move.opponentMoves = this.computeMoves(move.board, opponentColor(color));
+const computeMyMoves = (initialBoard: Board, color: PieceColor, deep: number): Move[] => {
+  const moves = computeMoves(initialBoard, color, deep);
 
-      move.computePostAnalyse(color);
-    }
+  for (let move of moves) {
+    move.opponentMoves = computeMoves(move.board, opponentColor(color), deep);
 
-    return moves;
+    move.computePostAnalyse(color);
   }
 
-  static find(board: Board, lastPlay: Play): Move | undefined {
-    const analyst = new Analyst();
+  return moves;
+};
 
-    console.log(lastPlay);
+const simulateMove = (move: Move, color: PieceColor): Move[] => {
+  // TODO gérer quand le joueur adverse peut faire pleins de coups
+  if (move.opponentMoves.length !== 1) return [];
 
-    const color = opponentColor(lastPlay.piece.color) || PieceColor.White;
+  const opponentMove = move.opponentMoves[0];
 
-    const moves = analyst.computeMyMoves(board, color);
+  return computeMyMoves(opponentMove.board, color, move.deep + 1);
+};
 
+export const find = (board: Board, lastPlay: Play): Move | undefined => {
+  const color = opponentColor(lastPlay.piece.color) || PieceColor.White;
+
+  let moves = computeMyMoves(board, color, 1);
+  // const allMoves = _.keyBy(moves, "id");
+
+  console.log(moves);
+
+  let i = 0;
+
+  while (moves.length && i < 5) {
+    moves.sort((m1, m2) => m1.compare(m2));
+
+    const move = moves.shift() as Move;
+    if (move.analyse?.checkMate) return move;
+
+    console.log("==========================================================");
+    console.log(move);
     console.log(moves);
+    console.log("==========================================================");
 
-    // let depth = 1;
-    // while (depth < 5) {
-    //   analyst.computeMyMoves(board, color);
+    const nextMoves = simulateMove(move, color);
 
-    //   const checkMove = analyst.findBestMove(moves);
-    //   if (checkMove) return checkMove;
+    moves = [...moves, ...nextMoves];
 
-    //   depth++;
-    // }
-
-    return undefined;
+    i += 1;
   }
-}
 
-// newMoves.sort((m1, m2) => m1.compare(m2));
-// if (newMoves[0]?.analyse?.checkMate) {
-//   newMoves = [newMoves[0]];
-// }
-
-// if (newMoves.length === 1 && depth === 1) {
-//   const forcedMove = newMoves[0];
-//   forcedMove.opponentMoves = this.computeMoves(forcedMove.board, opponentColor(color), depth + 1, null);
-//   forcedMove.computePostAnalyse(color);
-// }
+  return undefined;
+};
 
 // Idée algos
 
@@ -105,3 +91,6 @@ export class Analyst {
 // 5) Il va peut etre me falloir mettre les moves de base dans un object avec un id comme ca quand je descends
 // je descends l'id sur chaque move comme une sorte de pointeur vers le move initial car si a la fin j'ai un bon
 // move il me faut pouvoir l'associer avec le move initial
+
+// 6) Si je trouve mat en 3 il me faut check toutes les combinaisons de 2 pour être sur que je n'oublie pas un mat en 2
+// => ca veut dire qu'il me faut la profondeur d'un coup
