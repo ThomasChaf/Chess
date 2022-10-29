@@ -9,4 +9,4 @@ export const displayPlay = (play: Play | undefined, suffix: string = "") => {
   }
 };
 
-export const getKing = (board: Board, color: PieceColor) => board.getPieces(color, { type: PieceType.King })[0];
+export const getKing = (board: Board, color: PieceColor) => board.getPieces({ color, type: PieceType.King })[0];

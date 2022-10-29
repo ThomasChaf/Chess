@@ -5,12 +5,6 @@ import { PieceType, PieceColor, BoardPosition, Move, Play } from "./chess-d";
 import { isSameBox, opponentColor } from "./utils";
 import { Piece } from "./piece";
 
-export interface PieceFilters {
-  row?: number;
-  col?: number;
-  type?: PieceType;
-}
-
 export class Board {
   public pieces: Piece[];
 
@@ -33,16 +27,10 @@ export class Board {
     if (piece) piece.type = promotion;
   };
 
-  public getPieces = (color?: PieceColor, filters?: PieceFilters): Piece[] => {
+  public getPieces = (filters?: Partial<Piece>): Piece[] => {
     if (!filters) return this.pieces;
 
-    return this.pieces.filter(
-      (p: Piece) =>
-        (!color || color === p.color) &&
-        (!filters.row || filters.row === p.row) &&
-        (!filters.col || filters.col === p.col) &&
-        (!filters.type || filters.type === p.type)
-    );
+    return _.filter(this.pieces, filters);
   };
 
   public getPieceAt = (position: BoardPosition): Piece | undefined => {
