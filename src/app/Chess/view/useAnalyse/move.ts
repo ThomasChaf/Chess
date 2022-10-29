@@ -11,13 +11,13 @@ export class Move {
   board: Board;
   lastPlay: Play;
   id: string;
-  deep: number;
+  path: Move[];
 
-  constructor(board: Board, lastPlay: Play, deep: number = 1) {
+  constructor(board: Board, lastPlay: Play, path: Move[] = []) {
     this.board = board;
     this.id = _.uniqueId();
     this.lastPlay = lastPlay;
-    this.deep = deep;
+    this.path = path;
   }
 
   // if move is better than current return 1 otherwise -1

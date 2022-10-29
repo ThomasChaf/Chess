@@ -1,10 +1,9 @@
 import { PieceColor, Play } from "core/chess";
 import { Board } from "core/chess/board";
 import { opponentColor } from "core/chess/utils";
-import _ from "lodash";
 import { Move } from "./move";
 
-const computeMoves = (initialBoard: Board, color: PieceColor, deep: number): Move[] => {
+const computeMoves = (initialBoard: Board, color: PieceColor, path?: Move[]): Move[] => {
   const newMoves: Move[] = [];
   const pieces = initialBoard.getPieces({ color });
 
@@ -13,7 +12,7 @@ const computeMoves = (initialBoard: Board, color: PieceColor, deep: number): Mov
     for (let destination of destinations) {
       const board = Board.copy(initialBoard);
       const play = board.applyMove({ from: piece.position, to: destination });
-      const move = new Move(board, play, deep);
+      const move = new Move(board, play, path);
       const forbidden = move.computePreAnalyse(color);
       if (forbidden) continue;
 
@@ -24,11 +23,11 @@ const computeMoves = (initialBoard: Board, color: PieceColor, deep: number): Mov
   return newMoves;
 };
 
-const computeMyMoves = (initialBoard: Board, color: PieceColor, deep: number): Move[] => {
-  const moves = computeMoves(initialBoard, color, deep);
+const computeMyMoves = (initialBoard: Board, color: PieceColor, path?: Move[]): Move[] => {
+  const moves = computeMoves(initialBoard, color, path);
 
   for (let move of moves) {
-    move.opponentMoves = computeMoves(move.board, opponentColor(color), deep);
+    move.opponentMoves = computeMoves(move.board, opponentColor(color), path);
 
     move.computePostAnalyse(color);
   }
@@ -42,35 +41,28 @@ const simulateMove = (move: Move, color: PieceColor): Move[] => {
 
   const opponentMove = move.opponentMoves[0];
 
-  return computeMyMoves(opponentMove.board, color, move.deep + 1);
+  return computeMyMoves(opponentMove.board, color, [...move.path, move]);
 };
 
 export const find = (board: Board, lastPlay: Play): Move | undefined => {
   const color = opponentColor(lastPlay.piece.color) || PieceColor.White;
 
-  let moves = computeMyMoves(board, color, 1);
-  // const allMoves = _.keyBy(moves, "id");
+  let moves = computeMyMoves(board, color);
 
-  console.log(moves);
-
-  let i = 0;
-
-  while (moves.length && i < 5) {
+  while (moves.length) {
     moves.sort((m1, m2) => m1.compare(m2));
 
     const move = moves.shift() as Move;
     if (move.analyse?.checkMate) return move;
 
-    console.log("==========================================================");
-    console.log(move);
-    console.log(moves);
-    console.log("==========================================================");
+    // console.log("==========================================================");
+    // console.log(move);
+    // console.log(moves);
+    // console.log("==========================================================");
 
     const nextMoves = simulateMove(move, color);
 
     moves = [...moves, ...nextMoves];
-
-    i += 1;
   }
 
   return undefined;
