@@ -1,4 +1,4 @@
-import { PieceType, PieceColor } from "./chess-d";
+import { PieceType, PieceColor } from "./chess";
 
 interface IPiece {
   row: number;

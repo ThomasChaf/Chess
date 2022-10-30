@@ -17,6 +17,8 @@ export const View = ({ game }: ViewProps) => {
 
   const nextPlay = !loading ? game.getPlay() : undefined;
 
+  console.log("RENDER VIEW:", loading, nextPlay);
+
   return (
     <div className="chess-container">
       <Board nextPlay={nextPlay} pieces={game.board.getPieces()} />

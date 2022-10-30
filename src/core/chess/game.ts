@@ -1,4 +1,4 @@
-import { Play } from "./chess-d";
+import { Play } from "./chess";
 import { Board } from "./board";
 import { generate } from "shortid";
 import { reverseMove } from "./utils";
@@ -8,12 +8,13 @@ export class Game {
   public id: string = generate();
   public board: Board = new Board();
   public history: Play[] = [];
+  public analyse: { [k: number]: Play } = {};
   public interval: number = 0;
   private timer: NodeJS.Timeout | null = null;
   private step: number = 0;
 
   public getPlay = (): Play | undefined => {
-    return this.history[this.step];
+    return this.analyse[this.step] || this.history[this.step];
   };
 
   public getLastPlay = (): Play | undefined => {
@@ -22,6 +23,13 @@ export class Game {
 
   public onGoing = (): boolean => {
     return this.timer !== null;
+  };
+
+  public setAnalyse = (analysePlays: Play[]) => {
+    analysePlays.forEach((play, index) => {
+      play.fromAnalyse = true;
+      this.analyse[this.step + index] = play;
+    });
   };
 
   public play = (play: Play, save: boolean = true) => {

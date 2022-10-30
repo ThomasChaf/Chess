@@ -1,4 +1,4 @@
-import { BoardPosition } from "core/chess/chess-d";
+import { BoardPosition } from "core/chess/chess";
 import { Piece } from "./piece";
 import { VAL } from "./2048-d";
 

@@ -1,10 +1,10 @@
 import { PieceColor, Play } from "core/chess";
 import { Board } from "core/chess/board";
 import { opponentColor } from "core/chess/utils";
-import { Move } from "./move";
+import { Position } from "./position";
 
-const computeMoves = (initialBoard: Board, color: PieceColor, path?: Move[]): Move[] => {
-  const newMoves: Move[] = [];
+const computePositions = (initialBoard: Board, color: PieceColor, path?: Position[]): Position[] => {
+  const newPositions: Position[] = [];
   const pieces = initialBoard.getPieces({ color });
 
   for (let piece of pieces) {
@@ -12,60 +12,73 @@ const computeMoves = (initialBoard: Board, color: PieceColor, path?: Move[]): Mo
     for (let destination of destinations) {
       const board = Board.copy(initialBoard);
       const play = board.applyMove({ from: piece.position, to: destination });
-      const move = new Move(board, play, path);
-      const forbidden = move.computePreAnalyse(color);
+      const position = new Position(board, play, path);
+      const forbidden = position.computePreAnalyse(color);
       if (forbidden) continue;
 
-      newMoves.push(move);
+      newPositions.push(position);
     }
   }
 
-  return newMoves;
+  return newPositions;
 };
 
-const computeMyMoves = (initialBoard: Board, color: PieceColor, path?: Move[]): Move[] => {
-  const moves = computeMoves(initialBoard, color, path);
+const computeMyPositions = (initialBoard: Board, color: PieceColor, path?: Position[]): Position[] => {
+  const positions = computePositions(initialBoard, color, path);
 
-  for (let move of moves) {
-    move.opponentMoves = computeMoves(move.board, opponentColor(color), path);
+  for (let position of positions) {
+    position.opponentPositions = computePositions(position.board, opponentColor(color), path);
 
-    move.computePostAnalyse(color);
+    position.computePostAnalyse(color);
   }
 
-  return moves;
+  return positions;
 };
 
-const simulateMove = (move: Move, color: PieceColor): Move[] => {
+const simulatePosition = (position: Position, color: PieceColor): Position[] => {
   // TODO gérer quand le joueur adverse peut faire pleins de coups
-  if (move.opponentMoves.length !== 1) return [];
+  if (position.opponentPositions.length !== 1) return [];
 
-  const opponentMove = move.opponentMoves[0];
+  const opponentPosition = position.opponentPositions[0];
 
-  return computeMyMoves(opponentMove.board, color, [...move.path, move]);
+  return computeMyPositions(opponentPosition.board, color, [...position.path, position]);
 };
 
-export const find = (board: Board, lastPlay: Play): Move | undefined => {
+export const find = (board: Board, lastPlay: Play): Play[] => {
   const color = opponentColor(lastPlay.piece.color) || PieceColor.White;
 
-  let moves = computeMyMoves(board, color);
+  let positions = computeMyPositions(board, color);
 
-  while (moves.length) {
-    moves.sort((m1, m2) => m1.compare(m2));
+  while (positions.length) {
+    positions.sort((m1, m2) => m1.compare(m2));
 
-    const move = moves.shift() as Move;
-    if (move.analyse?.checkMate) return move;
+    const position = positions.shift() as Position;
+    if (position.analyse?.checkMate) {
+      console.log("============= FINAL RESULT: =============");
+      position.display();
+      console.log("=========================================");
+      const results: Play[] = [];
+
+      position.path.forEach(({ lastPlay, opponentPositions }) => {
+        results.push(lastPlay);
+        results.push(opponentPositions[0].lastPlay);
+      });
+      results.push(position.lastPlay);
+
+      return results;
+    }
 
     // console.log("==========================================================");
     // console.log(move);
     // console.log(moves);
     // console.log("==========================================================");
 
-    const nextMoves = simulateMove(move, color);
+    const nextPositions = simulatePosition(position, color);
 
-    moves = [...moves, ...nextMoves];
+    positions = [...positions, ...nextPositions];
   }
 
-  return undefined;
+  return [];
 };
 
 // Idée algos

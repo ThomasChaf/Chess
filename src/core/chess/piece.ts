@@ -1,5 +1,5 @@
 import { generate } from "shortid";
-import { PieceColor, PieceType, BoardPosition } from "./chess-d";
+import { PieceColor, PieceType, BoardPosition } from "./chess";
 
 export class Piece {
   public id: string = generate();

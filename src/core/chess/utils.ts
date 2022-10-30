@@ -1,5 +1,5 @@
 import { Play } from ".";
-import { BoardPosition, PieceType, Move, PieceColor } from "./chess-d";
+import { BoardPosition, PieceType, Move, PieceColor } from "./chess";
 import { Piece } from "./piece";
 
 export const opponentColor = (color: PieceColor) => (color === PieceColor.White ? PieceColor.Black : PieceColor.White);

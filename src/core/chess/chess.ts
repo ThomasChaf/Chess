@@ -27,6 +27,7 @@ export type Promotion = {
 };
 
 export type Play = {
+  fromAnalyse?: boolean;
   move: Move;
   piece: Piece;
   rock?: Move;

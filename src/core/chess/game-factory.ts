@@ -1,8 +1,8 @@
 import _ from "lodash";
 
-import { Move } from "app/chess/view/useAnalyse/move";
+import { Position } from "app/chess/view/useAnalyse/position";
 
-import { PieceColor, PieceType, BoardPosition, Play, Promotion } from "./chess-d";
+import { PieceColor, PieceType, BoardPosition, Play, Promotion } from "./chess";
 import { parseCol, parseRow, parseType, isSameBox, isPawn } from "./utils";
 import { Piece } from "./piece";
 import { Game } from "./game";
@@ -17,8 +17,8 @@ class GameFactory {
     const board = Board.copy(this.game.board);
     board.applyMove(play.move);
 
-    const move = new Move(board, play);
-    return !move.computePreAnalyse(piece.color);
+    const position = new Position(board, play);
+    return !position.computePreAnalyse(piece.color);
   };
 
   private getPossiblePieces = (filters: Partial<Piece>, to: BoardPosition): Piece[] => {
@@ -235,7 +235,6 @@ class GameFactory {
 
     return this.game;
   };
-  currentPlay: Play = {} as Play;
 }
 
 export const parse = (blob: string): Game => {

@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import { PIECES } from "./initial-state";
-import { PieceType, PieceColor, BoardPosition, Move, Play } from "./chess-d";
+import { PieceType, PieceColor, BoardPosition, Move, Play } from "./chess";
 import { isSameBox, opponentColor } from "./utils";
 import { Piece } from "./piece";
 

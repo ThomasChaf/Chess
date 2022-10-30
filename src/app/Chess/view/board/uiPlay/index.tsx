@@ -1,4 +1,5 @@
 import React from "react";
+import cn from "classnames";
 
 import { Play } from "core/chess";
 
@@ -12,6 +13,8 @@ interface PieceProps {
 }
 
 export const UiPlay = ({ play }: PieceProps) => {
+  console.log("UiPlay:", play);
+
   const caseLength = 650 / 8;
   const { move } = play;
   const { from, to } = move;
@@ -21,7 +24,7 @@ export const UiPlay = ({ play }: PieceProps) => {
   const y2 = caseLength * colToY(to[1]) + caseLength / 2;
 
   return (
-    <svg className="chess-play">
+    <svg className={cn("chess-play", { active: play.fromAnalyse })}>
       <defs>
         <marker id="arrowhead-pb" orient="auto" markerWidth="4" markerHeight="8" refX="2.05" refY="2.01">
           <path d="M0,0 V4 L3,2 Z"></path>
