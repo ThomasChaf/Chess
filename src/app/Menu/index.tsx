@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { useHistory } from "react-router-dom";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { XButton } from "common/button";
 import { AnimatedLayout, AnimatedLayoutRef } from "common/animatedLayout";
@@ -8,11 +8,11 @@ import "./menu.scss";
 
 export const Menu = () => {
   const layoutRef = useRef<AnimatedLayoutRef>(null);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const redirect = (path: string) => {
     layoutRef.current?.close();
-    history.push(path);
+    navigate(path);
   };
 
   const openMenu = () => layoutRef.current?.open();
@@ -27,10 +27,6 @@ export const Menu = () => {
         <div className="menu-box">
           <p className="menu-headline">Menu</p>
           <div className="menu-content">
-            <XButton onClick={() => redirect("/workout")} next>
-              Workout
-            </XButton>
-            <br />
             <XButton onClick={() => redirect("/chess")} next>
               Chess
             </XButton>
