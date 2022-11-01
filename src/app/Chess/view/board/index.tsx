@@ -1,4 +1,3 @@
-import React from "react";
 import { Piece, Play } from "core/chess";
 
 import { UiPiece } from "./uiPiece";
@@ -14,8 +13,6 @@ interface BoardProps {
 export const Board = ({ nextPlay, pieces }: BoardProps) => {
   const rows = [1, 2, 3, 4, 5, 6, 7, 8];
   const cols = [1, 2, 3, 4, 5, 6, 7, 8];
-
-  console.log("RENDER board:", nextPlay);
 
   return (
     <div className="chess-board">

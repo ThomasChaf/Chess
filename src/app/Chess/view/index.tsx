@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Game } from "core/chess";
 
 import { Board } from "./board";
@@ -16,8 +14,6 @@ export const View = ({ game }: ViewProps) => {
   const { analyse, loading } = useAnalyse(game);
 
   const nextPlay = !loading ? game.getPlay() : undefined;
-
-  console.log("RENDER VIEW:", loading, nextPlay);
 
   return (
     <div className="chess-container">
