@@ -2,6 +2,7 @@ import { PieceColor, Play } from "core/chess";
 import { Board } from "core/chess/board";
 import { opponentColor } from "core/chess/utils";
 import { Position } from "./position";
+import { REPORT_TYPE } from "./report";
 
 const computePositions = (initialBoard: Board, color: PieceColor, path?: Position[]): Position[] => {
   const newPositions: Position[] = [];
@@ -13,8 +14,8 @@ const computePositions = (initialBoard: Board, color: PieceColor, path?: Positio
       const board = Board.copy(initialBoard);
       const play = board.applyMove({ from: piece.position, to: destination });
       const position = new Position(board, play, path);
-      const forbidden = position.computePreAnalyse(color);
-      if (forbidden) continue;
+      position.computePreAnalyse(color);
+      if (position.report.is(REPORT_TYPE.forbidden)) continue;
 
       newPositions.push(position);
     }
@@ -27,16 +28,27 @@ const computeMyPositions = (initialBoard: Board, color: PieceColor, path?: Posit
   const positions = computePositions(initialBoard, color, path);
 
   for (let position of positions) {
-    position.opponentPositions = computePositions(position.board, opponentColor(color), path);
-
-    position.computePostAnalyse(color);
+    if (position.report.is(REPORT_TYPE.check)) {
+      position.opponentPositions = computePositions(position.board, opponentColor(color), path);
+      position.computePostAnalyse();
+    }
   }
 
   return positions;
 };
 
-const simulatePosition = (position: Position, color: PieceColor): Position[] => {
+const simulatePosition = (position: Position, color: PieceColor, i: number): Position[] => {
+  if (!position.report.postAnalysed()) {
+    position.opponentPositions = computePositions(position.board, opponentColor(color), position.path);
+  }
+
+  // if (i === 2) {
+  //   console.log("===== ICI");
+
+  //   console.log(position.opponentPositions);
+  // }
   // TODO gérer quand le joueur adverse peut faire pleins de coups
+  // En fait il me faut compute chacune des positions pour toutes ses positions
   if (position.opponentPositions.length !== 1) return [];
 
   const opponentPosition = position.opponentPositions[0];
@@ -49,11 +61,13 @@ export const find = (board: Board, lastPlay: Play): Play[] => {
 
   let positions = computeMyPositions(board, color);
 
-  while (positions.length) {
+  let i = 0;
+  while (positions.length && i < 5) {
     positions.sort((m1, m2) => m1.compare(m2));
 
     const position = positions.shift() as Position;
-    if (position.analyse?.checkMate) {
+    position.display();
+    if (position.report.is(REPORT_TYPE.checkMate)) {
       console.log("============= FINAL RESULT: =============");
       position.display();
       console.log("=========================================");
@@ -68,14 +82,10 @@ export const find = (board: Board, lastPlay: Play): Play[] => {
       return results;
     }
 
-    // console.log("==========================================================");
-    // console.log(move);
-    // console.log(moves);
-    // console.log("==========================================================");
-
-    const nextPositions = simulatePosition(position, color);
+    const nextPositions = simulatePosition(position, color, i);
 
     positions = [...positions, ...nextPositions];
+    i += 1;
   }
 
   return [];

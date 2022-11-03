@@ -1,6 +1,7 @@
 import _ from "lodash";
 
 import { Position } from "app/chess/view/useAnalyse/position";
+import { REPORT_TYPE } from "app/chess/view/useAnalyse/report";
 
 import { PieceColor, PieceType, BoardPosition, Play, Promotion } from "./chess";
 import { parseCol, parseRow, parseType, isSameBox, isPawn } from "./utils";
@@ -18,7 +19,8 @@ class GameFactory {
     board.applyMove(play.move);
 
     const position = new Position(board, play);
-    return !position.computePreAnalyse(piece.color);
+    position.computePreAnalyse(piece.color);
+    return !position.report.is(REPORT_TYPE.forbidden);
   };
 
   private getPossiblePieces = (filters: Partial<Piece>, to: BoardPosition): Piece[] => {
