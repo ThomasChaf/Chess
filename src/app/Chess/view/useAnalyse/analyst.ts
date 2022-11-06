@@ -4,7 +4,17 @@ import { opponentColor } from "core/chess/utils";
 import { Position } from "./position";
 import { REPORT_TYPE } from "./report";
 
-const computePositions = (initialBoard: Board, color: PieceColor, path?: Position[]): Position[] => {
+const positionsContainer: { [k: string]: Position } = {};
+
+const createPosition = (board: Board, play: Play, parentId?: string) => {
+  const position = new Position(board, play, parentId);
+  positionsContainer[position.id] = position;
+  return position;
+};
+
+const getPosition = (id: string) => positionsContainer[id];
+
+const computePositions = (initialBoard: Board, color: PieceColor, parentId?: string): Position[] => {
   const newPositions: Position[] = [];
   const pieces = initialBoard.getPieces({ color });
 
@@ -13,7 +23,7 @@ const computePositions = (initialBoard: Board, color: PieceColor, path?: Positio
     for (let destination of destinations) {
       const board = Board.copy(initialBoard);
       const play = board.applyMove({ from: piece.position, to: destination });
-      const position = new Position(board, play, path);
+      const position = createPosition(board, play, parentId);
       position.computePreAnalyse(color);
       if (position.report.is(REPORT_TYPE.forbidden)) continue;
 
@@ -24,12 +34,24 @@ const computePositions = (initialBoard: Board, color: PieceColor, path?: Positio
   return newPositions;
 };
 
-const computeMyPositions = (initialBoard: Board, color: PieceColor, path?: Position[]): Position[] => {
-  const positions = computePositions(initialBoard, color, path);
+const computeMyPositions = (opponentBoard: Board, color: PieceColor, opponentPositionId?: string): Position[] => {
+  const parentBoards: Board[] = [];
+  let parentId = opponentPositionId;
+
+  while (parentId) {
+    const opponentPosition = getPosition(parentId);
+    const myParentPosition = getPosition(opponentPosition.parentId!);
+    parentBoards.push(myParentPosition.board);
+    parentId = myParentPosition.parentId;
+  }
+
+  const positions = computePositions(opponentBoard, color, opponentPositionId).filter(({ board }) => {
+    return !parentBoards.some((parentBoard) => parentBoard.equal(board));
+  });
 
   for (let position of positions) {
     if (position.report.is(REPORT_TYPE.check)) {
-      position.opponentPositions = computePositions(position.board, opponentColor(color), path);
+      position.opponentPositions = computePositions(position.board, opponentColor(color), position.id);
       position.computePostAnalyse();
     }
   }
@@ -39,21 +61,34 @@ const computeMyPositions = (initialBoard: Board, color: PieceColor, path?: Posit
 
 const simulatePosition = (position: Position, color: PieceColor, i: number): Position[] => {
   if (!position.report.postAnalysed()) {
-    position.opponentPositions = computePositions(position.board, opponentColor(color), position.path);
+    position.opponentPositions = computePositions(position.board, opponentColor(color));
   }
 
-  // if (i === 2) {
-  //   console.log("===== ICI");
+  const initial: Position[] = [];
+  return position.opponentPositions.reduce(
+    (acc, opponentPosition) => [...acc, ...computeMyPositions(opponentPosition.board, color, opponentPosition.id)],
+    initial
+  );
+};
 
-  //   console.log(position.opponentPositions);
-  // }
-  // TODO gérer quand le joueur adverse peut faire pleins de coups
-  // En fait il me faut compute chacune des positions pour toutes ses positions
-  if (position.opponentPositions.length !== 1) return [];
+const managePosition = (initialPosition: Position) => {
+  const matePlays: Play[] = [initialPosition.lastPlay];
 
-  const opponentPosition = position.opponentPositions[0];
+  let position = initialPosition;
+  while (position.parentId && position.report.is(REPORT_TYPE.checkMate)) {
+    const opponentParentPosition = getPosition(position.parentId);
+    opponentParentPosition.report.setType(REPORT_TYPE.opponentWillMate, position.report.description);
 
-  return computeMyPositions(opponentPosition.board, color, [...position.path, position]);
+    const myParentPosition = getPosition(opponentParentPosition.parentId!);
+    myParentPosition.recomputePostAnalyse();
+
+    matePlays.unshift(opponentParentPosition.lastPlay);
+    matePlays.unshift(myParentPosition.lastPlay);
+
+    position = myParentPosition;
+  }
+
+  return position.report.is(REPORT_TYPE.checkMate) ? matePlays : null;
 };
 
 export const find = (board: Board, lastPlay: Play): Play[] => {
@@ -62,27 +97,15 @@ export const find = (board: Board, lastPlay: Play): Play[] => {
   let positions = computeMyPositions(board, color);
 
   let i = 0;
-  while (positions.length && i < 5) {
+  while (positions.length && i < 50) {
     positions.sort((m1, m2) => m1.compare(m2));
 
     const position = positions.shift() as Position;
-    position.display();
-    if (position.report.is(REPORT_TYPE.checkMate)) {
-      console.log("============= FINAL RESULT: =============");
-      position.display();
-      console.log("=========================================");
-      const results: Play[] = [];
-
-      position.path.forEach(({ lastPlay, opponentPositions }) => {
-        results.push(lastPlay);
-        results.push(opponentPositions[0].lastPlay);
-      });
-      results.push(position.lastPlay);
-
-      return results;
-    }
-
+    // position.display();
     const nextPositions = simulatePosition(position, color, i);
+
+    const matePlays = managePosition(position);
+    if (matePlays) return matePlays;
 
     positions = [...positions, ...nextPositions];
     i += 1;

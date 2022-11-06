@@ -6,7 +6,8 @@ export enum REPORT_TYPE {
   check = "check",
   checkMate = "checkMate",
   undefined = "undefined",
-  forbidden = "forbidden"
+  forbidden = "forbidden",
+  opponentWillMate = "opponentWillMate"
 }
 
 export class Report {

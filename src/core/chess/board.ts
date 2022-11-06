@@ -260,4 +260,15 @@ export class Board {
       console.log(`${row} ${rowText}\n`);
     }
   };
+
+  public equal = (board: Board) => {
+    if (this.pieces.length !== board.pieces.length) return false;
+
+    const comparisonContainer: { [k: string]: string } = {};
+    this.pieces.forEach(({ col, row, color, type }) => {
+      comparisonContainer[`${row}${col}`] = `${color}${type}`;
+    });
+
+    return board.pieces.every(({ col, row, color, type }) => comparisonContainer[`${row}${col}`] == `${color}${type}`);
+  };
 }

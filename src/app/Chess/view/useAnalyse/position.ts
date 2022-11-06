@@ -10,15 +10,15 @@ export class Position {
   id: string;
   lastPlay: Play;
   opponentPositions: Position[] = [];
-  path: Position[];
+  parentId?: string;
   report: Report;
 
-  constructor(board: Board, lastPlay: Play, path: Position[] = []) {
+  constructor(board: Board, lastPlay: Play, parentId?: string) {
     this.report = new Report();
     this.board = board;
     this.id = _.uniqueId();
     this.lastPlay = lastPlay;
-    this.path = path;
+    this.parentId = parentId;
   }
 
   // if position is better than current return 1 otherwise -1
@@ -51,12 +51,21 @@ export class Position {
     }
   }
 
+  public recomputePostAnalyse() {
+    if (this.opponentPositions.every((position) => position.report.is(REPORT_TYPE.opponentWillMate))) {
+      const checkIn = Math.max(...this.opponentPositions.map((position) => position.report.description.checkIn!));
+      this.report.setType(REPORT_TYPE.checkMate, { checkIn });
+      return;
+    }
+  }
+
   public display() {
-    console.log("DISPLAY MOVE: ============", this.report.toString());
+    console.log("============ DISPLAY POSITION:", this.report.toString());
+    console.log("from:", this.parentId);
     this.board.display();
-    displayPlay(this.lastPlay, "MY");
+    displayPlay(this.lastPlay, `${this.id} MY`);
     this.opponentPositions.forEach((x) => {
-      displayPlay(x.lastPlay, "O:");
+      displayPlay(x.lastPlay, `${x.id} O:`);
     });
   }
 }
